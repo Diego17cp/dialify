@@ -8,7 +8,11 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "tsx watch src/index.ts",
-    "build": "rimraf dist && tsc && tsc-alias"
+    "build": "rimraf dist && tsc && tsc-alias",
+    "db:generate": "prisma generate",
+    "db:push": "prisma db push",
+    "db:migrate": "prisma migrate dev",
+    "db:studio": "prisma studio"
   },
   "author": "Dialcadev",
   "license": "ISC",
@@ -21,6 +25,7 @@
     "helmet": "8.1.0"
   },
   "devDependencies": {
+    "@types/cors": "2.8.19",
     "@types/express": "5.0.6",
     "@types/node": "25.1.0",
     "prisma": "7.3.0",

@@ -49,7 +49,7 @@
 		"isolatedModules": true,
 		"noUncheckedSideEffectImports": true,
 		"moduleDetection": "force",
-		"skipLibCheck": true,
-		"include": ["src/**/*", "src/types/**/*.d.ts"]
-	}
+		"skipLibCheck": true
+	},
+	"include": ["src/**/*", "src/types/**/*.d.ts"]
 }
