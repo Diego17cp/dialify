@@ -4,10 +4,10 @@
   "version": "1.0.0",
   "type": "module",
   "description": "",
-  "main": "src/index.ts",
+  "main": "src/server.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "tsx watch src/index.ts",
+    "dev": "tsx watch src/server.ts",
     "build": "rimraf dist && tsc && tsc-alias",
     "db:generate": "prisma generate",
     "db:push": "prisma db push",
@@ -18,11 +18,13 @@
   "license": "ISC",
   "packageManager": "pnpm@10.14.0",
   "dependencies": {
+    "@prisma/adapter-pg": "7.3.0",
     "@prisma/client": "7.3.0",
     "cors": "2.8.6",
     "dotenv": "17.2.3",
     "express": "5.2.1",
-    "helmet": "8.1.0"
+    "helmet": "8.1.0",
+    "pg": "8.18.0"
   },
   "devDependencies": {
     "@types/cors": "2.8.19",
