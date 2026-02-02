@@ -1,8 +1,11 @@
 import express, { Application } from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
+import cookieParser from 'cookie-parser';
 import { env } from '@/config';
 import { DatabaseConnection } from '@/config';
+import router from './routes';
+import { errorHandler } from './middlewares/errorHandler';
 
 
 export const app: Application = express();
@@ -15,6 +18,7 @@ app.use(cors({
 }))
 app.use(helmet());
 app.use(express.json());
+app.use(cookieParser());
 
 app.get('/', (_, res) => {
     res.json({
@@ -24,3 +28,6 @@ app.get('/', (_, res) => {
         timestamp: new Date().toISOString()
     });
 })
+
+app.use("/api", router);
+app.use(errorHandler);
