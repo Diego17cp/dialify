@@ -8,4 +8,6 @@ export const env = {
     DATABASE_URL: process.env.DATABASE_URL || '',
     JWT_SECRET: process.env.JWT_SECRET || '',
     JWT_SECRET_REFRESH: process.env.JWT_SECRET_REFRESH || '',
+    MAIL_USER: process.env.MAIL_USER || '',
+    MAIL_PASS: process.env.MAIL_PASS || '',
 }
