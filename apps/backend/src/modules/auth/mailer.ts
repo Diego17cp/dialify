@@ -1,7 +1,10 @@
 import { env } from "@/config";
 import nodemailer from "nodemailer";
 import path from "path";
+import { fileURLToPath } from "url";
 import hbs from "nodemailer-express-handlebars";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const transporter = nodemailer.createTransport({
     service: "gmail",

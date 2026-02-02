@@ -112,7 +112,7 @@ export class AuthController {
 	};
 
 	convertAnonymous = async (req: AuthRequest, res: Response) => {
-		const { email, password, username } = req.body;
+		const { email, password, username, phone } = req.body;
 		const userId = req.user?.id;
 
 		if (!userId) throw new AppError("Unauthorized", 401);
@@ -125,6 +125,7 @@ export class AuthController {
 			email,
 			password,
 			username,
+			phone,
 		);
 
 		const platform = extractPlatform(req);

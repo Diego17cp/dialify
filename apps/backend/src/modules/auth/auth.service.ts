@@ -20,7 +20,8 @@ export class AuthService {
 		});
 		if (!user) return null;
 
-		const isValid = await verifyPassword(password, user.password || "");
+		
+		const isValid = await verifyPassword(user.password || "", password);
 		if (!isValid) return null;
 
 		const parsedUser = parseUser(user);
@@ -77,6 +78,7 @@ export class AuthService {
 		email: string,
 		password: string,
 		username?: string,
+		phone?: string,
 	): Promise<AuthResponse> => {
 		const user = await this.userRepo.findById(userId);
 		if (!user || !user.isAnonymous) throw new AppError("Invalid user", 400);
@@ -92,6 +94,7 @@ export class AuthService {
 				password: hashedPassword,
 				username: username || user.username,
 				isAnonymous: false,
+				phone: phone || user.phone,
 			},
 		});
 		const parsedUser = parseUser(updatedUser);
