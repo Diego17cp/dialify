@@ -1,13 +1,14 @@
 import { Router } from "express";
 import {
-    authRoutes
+    authRoutes,
+    usersRoutes
 } from "@/modules";
-import { authGuard } from "./middlewares/authGuard";
+// import { authGuard } from "./middlewares/authGuard";
 
 const router: Router = Router();
 
 router.use("/auth", authRoutes);
-
+router.use("/users", usersRoutes);
 
 
 router.use("/", (_, res) => {
