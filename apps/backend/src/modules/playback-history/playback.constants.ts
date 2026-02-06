@@ -1,0 +1,1 @@
+export const MIN_PLAY_DURATION_SECONDS = 30;
