@@ -22,30 +22,21 @@ export class YtdlpProvider {
 				title,
 				duration,
 				thumbnail,
-				artist,
-				artists,
-				creator,
-				uploader,
 			} = data;
-			const artistsList = YtdlpUtils.extractArtists({
-				artists: artists ? artists : undefined,
-				artist,
-				creator,
-				uploader: uploader || "",
-			});
+			const artistsList = YtdlpUtils.extractArtists(data);
 			return {
 				provider: "youtube" as const,
 				providerId: id!,
 				title: title!,
 				displayTitle:
 					artistsList.length > 0
-						? `${title!} - ${artistsList[0]}`
+						? `${title!} - ${artistsList[0]?.name}`
 						: title!,
 				duration:
 					duration && duration !== "NA" ? parseInt(duration) : null,
 				thumbnailUrl:
 					thumbnail && thumbnail !== "NA" ? thumbnail : null,
-				artists: artistsList,
+				artists: artistsList.map((artist) => artist.name),
 			};
 		});
 	}
