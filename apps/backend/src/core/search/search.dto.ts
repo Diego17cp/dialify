@@ -10,4 +10,5 @@ export type SearchResultDTO = {
     duration: number | null; // in seconds
     thumbnailUrl: string | null;
     artists: string[];
+    displayTitle?: string
 }

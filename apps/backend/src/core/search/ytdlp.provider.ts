@@ -1,5 +1,6 @@
 import { execa } from "execa";
 import { SearchResultDTO } from "./search.dto";
+import { YtdlpUtils } from "../utils";
 
 export class YtdlpProvider {
 	static async search(
@@ -8,24 +9,43 @@ export class YtdlpProvider {
 	): Promise<SearchResultDTO[]> {
 		const { stdout } = await execa("yt-dlp", [
 			`ytsearch${limit}:${query}`,
-			"--print",
-			"%(id)s|||%(title)s|||%(duration)s|||%(thumbnail)s|||%(uploader)s",
+			"--dump-json",
 			"--skip-download",
 			"--no-warnings",
 		]);
 
 		const lines = stdout.split("\n").filter(Boolean);
 		return lines.map((line) => {
-			const [id, title, duration, thumbnail, uploader] = line.split("|||");
+			const data = JSON.parse(line);
+			const {
+				id,
+				title,
+				duration,
+				thumbnail,
+				artist,
+				artists,
+				creator,
+				uploader,
+			} = data;
+			const artistsList = YtdlpUtils.extractArtists({
+				artists: artists ? artists : undefined,
+				artist,
+				creator,
+				uploader: uploader || "",
+			});
 			return {
 				provider: "youtube" as const,
 				providerId: id!,
 				title: title!,
+				displayTitle:
+					artistsList.length > 0
+						? `${title!} - ${artistsList[0]}`
+						: title!,
 				duration:
 					duration && duration !== "NA" ? parseInt(duration) : null,
 				thumbnailUrl:
 					thumbnail && thumbnail !== "NA" ? thumbnail : null,
-				artists: uploader && uploader !== "NA" ? [uploader] : [],
+				artists: artistsList,
 			};
 		});
 	}
