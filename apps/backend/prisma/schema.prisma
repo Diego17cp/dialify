@@ -62,6 +62,7 @@ model Track {
   id Int @id @default(autoincrement())
   title String @db.VarChar(255)
   duration Int
+  thumbnailUrl String? @db.Text @map("thumbnail_url")
   source String @db.VarChar(255)
   sourceId String? @db.VarChar(255) @map("source_id")
   audioRef String? @db.Text @map("audio_ref")
