@@ -17,7 +17,7 @@ export class UsersRepository {
         deletedAt: true,
     }
 
-    async findById(id: number, active: boolean = true): Promise<User | null> {
+    async findById(id: string, active: boolean = true): Promise<User | null> {
         return this.users.findUnique({
             where: { id, isActive: active },
             select: this.selectFields,
@@ -46,7 +46,7 @@ export class UsersRepository {
         return user;
     }
 
-    async update(id: number, data: UpdateUser): Promise<User> {
+    async update(id: string, data: UpdateUser): Promise<User> {
         return this.users.update({
             where: { id },
             data,
@@ -54,7 +54,7 @@ export class UsersRepository {
         });
     }
 
-    async delete(id: number): Promise<User> {
+    async delete(id: string): Promise<User> {
         return this.users.update({
             where: { id },
             data: { isActive: false, deletedAt: new Date() },

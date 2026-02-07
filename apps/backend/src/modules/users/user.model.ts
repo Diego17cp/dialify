@@ -10,7 +10,7 @@ export interface CreateUser {
 }
 export interface UpdateUser extends Partial<CreateUser> {}
 export interface User {
-    id: number;
+    id: string;
     email: string | null;
     phone: string | null;
     username: string | null;

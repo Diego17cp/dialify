@@ -74,7 +74,7 @@ export class AuthService {
 	};
 
 	convertAnonymousToRegistered = async (
-		userId: number,
+		userId: string,
 		email: string,
 		password: string,
 		username?: string,

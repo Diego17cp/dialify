@@ -11,7 +11,7 @@ export class UsersService {
         return user;
     }
 
-    async getUserById(id: number) {
+    async getUserById(id: string) {
         const exists = await this.repo.findById(id);
         return this.ensureUser(exists);
     }
@@ -27,13 +27,13 @@ export class UsersService {
         const user = await this.repo.create(data);
         return user;
     }
-    async updateUser(id: number, data: UpdateUser) {
+    async updateUser(id: string, data: UpdateUser) {
         const exists = await this.repo.findById(id);
         this.ensureUser(exists);
         const user = await this.repo.update(id, data);
         return user;
     }
-    async deleteUser(id: number) {
+    async deleteUser(id: string) {
         const exists = await this.repo.findById(id);
         this.ensureUser(exists);
         const user = await this.repo.delete(id);
