@@ -29,6 +29,7 @@ export class YtdlpIngestProvider {
                     : null,
             thumbnailUrl: this.extractThumbnail(data),
             artists,
+            genres: this.extractGenres(data),
         }
     }
     private static extractThumbnail(data: any): string | null {
@@ -37,6 +38,13 @@ export class YtdlpIngestProvider {
         }
         return data.thumbnail ?? null;
     }
-
-    
+    private static extractGenres(data: any): string[] {
+        if (Array.isArray(data.genres)) {
+            return data.genres
+        }
+        if (typeof data.genre === "string") {
+            return data.genre.split(",").map((g: string) => g.trim());
+        }
+        return [];
+    }
 }

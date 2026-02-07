@@ -13,6 +13,7 @@ export class IngestService {
             duration: meta.duration ?? 0,
             thumbnailUrl: meta.thumbnailUrl,
             artists: meta.artists,
+            genres: meta.genres,
         })
         return track;
     }

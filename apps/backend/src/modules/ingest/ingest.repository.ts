@@ -24,6 +24,7 @@ export class IngestRepository {
         duration: number;
         thumbnailUrl: string | null;
         artists: ArtistMeta[];
+        genres: string[];
     }) {
         return this.db.$transaction(async (tx) => {
             const existing = await tx.track.findUnique({
@@ -35,7 +36,28 @@ export class IngestRepository {
                 },
             });
             if (existing) return existing;
-            
+            let firstGenreId: number | null = null;
+            if (data.genres.length > 0) {
+                const genreIds = await Promise.all(
+                    data.genres.map(async (g) => {
+                        const normalized = g.trim().toLowerCase();
+                        let genre = await tx.genre.findUnique({
+                            where: {
+                                name: normalized,
+                            },
+                        });
+                        if (!genre) {
+                            genre = await tx.genre.create({
+                                data: {
+                                    name: normalized,
+                                },
+                            });
+                        }
+                        return genre.id
+                    })
+                );
+                if (genreIds.length > 0) firstGenreId = genreIds[0] || null;
+            }
             const track = await tx.track.create({
                 data: {
                     source: data.source,
@@ -43,6 +65,7 @@ export class IngestRepository {
                     title: data.title,
                     duration: data.duration,
                     thumbnailUrl: data.thumbnailUrl,
+                    genreId: firstGenreId,
                 },
             });
             
