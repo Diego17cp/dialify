@@ -99,7 +99,7 @@ export class PlaylistRepository {
             data: { isActive: false, deletedAt: new Date() }
         })
     }
-    async listByOwnerId(ownerId: string) {
+    async listByOwnerId(ownerId: string, currentUserId?: string) {
         return this.db.playlist.findMany({
             where: { ownerId },
             include: {
@@ -115,13 +115,23 @@ export class PlaylistRepository {
                         },
                     },
                 },
+                ...(currentUserId && {
+                    likes: {
+                        where: {
+                            userId: currentUserId,
+                            targetType: "PLAYLIST",
+                            isActive: true,
+                        },
+                        take: 1,
+                    },
+                }),
             },
             orderBy: { updatedAt: "desc" },
         });
     }
     async getPlaylistTracks(
         playlistId: number,
-        options: { skip: number; limit: number }
+        options: { skip: number; limit: number; userId?: string }
     ) {
         return this.db.playlistTrack.findMany({
             where: { playlistId },
@@ -132,6 +142,16 @@ export class PlaylistRepository {
                             include: { artist: true },
                         },
                         genre: true,
+                        ...(options.userId && {
+                            likes: {
+                                where: {
+                                    userId: options.userId,
+                                    targetType: "TRACK",
+                                    isActive: true,
+                                },
+                                take: 1,
+                            },
+                        }),
                     },
                 },
             },

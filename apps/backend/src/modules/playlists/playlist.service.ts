@@ -25,8 +25,8 @@ export class PlaylistService {
         await this.ensurePlaylistExists(playlistId);
         return this.repo.delete(playlistId);
     }
-    static async getPlaylistByOwnerId(ownerId: string) {
-        const playlists = await this.repo.listByOwnerId(ownerId);
+    static async getPlaylistByOwnerId(ownerId: string, currentUserId?: string) {
+        const playlists = await this.repo.listByOwnerId(ownerId, currentUserId);
         if (!playlists || playlists.length === 0) throw new AppError("No playlists found for this owner", 404);
         return playlists.map(p => ({
             id: p.id,
@@ -36,17 +36,18 @@ export class PlaylistService {
             createdAt: p.createdAt,
             updatedAt: p.updatedAt,
             trackCount: p._count.tracks,
-            coverImageUrl: p.tracks.length > 0 ? p.tracks[0]?.track?.thumbnailUrl : null
+            coverImageUrl: p.tracks.length > 0 ? p.tracks[0]?.track?.thumbnailUrl : null,
+            isLiked: currentUserId ? p.likes && p.likes.length > 0 : false
         }));
     }
     static async getPlaylistDetails(
         playlistId: number,
-        options: { page: number; limit: number }
+        options: { page: number; limit: number; userId?: string }
     ) {
         const playlist = await this.ensurePlaylistExists(playlistId);
-        const { page, limit } = options;
+        const { page, limit, userId } = options;
         const skip = (page - 1) * limit;
-        const tracks = await this.repo.getPlaylistTracks(playlistId, { skip, limit});
+        const tracks = await this.repo.getPlaylistTracks(playlistId, { skip, limit, ...(userId && { userId }) });
         const totalTracks = await this.repo.countTracks(playlistId);
         return {
             id: playlist.id,
@@ -69,6 +70,7 @@ export class PlaylistService {
                 })),
                 genre: t.track.genre?.name || null,
                 orderIndex: t.orderIndex,
+                isLiked: userId ? t.track.likes && t.track.likes.length > 0 : false
             })),
             pagination: {
                 page,

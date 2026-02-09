@@ -60,10 +60,11 @@ export class PlaylistController {
     static async getPlaylistsByOwner(req: AuthRequest, res: Response) {
         const { ownerId: id } = req.params;
         const ownerId = id as string || req.user?.id;
+        const currentUserId = req.user?.id;
 
         if (!ownerId) throw new AppError("Owner ID is required", 400);
 
-        const playlists = await PlaylistService.getPlaylistByOwnerId(ownerId);
+        const playlists = await PlaylistService.getPlaylistByOwnerId(ownerId, currentUserId);
 
         return res.json({
             success: true,
@@ -76,12 +77,14 @@ export class PlaylistController {
         const playlistId = Number(id);
         const page = parseInt(req.query.page as string) || 1;
         const limit = parseInt(req.query.limit as string) || 50;
+        const userId = req.user?.id;
 
         if (isNaN(playlistId)) throw new AppError("Invalid playlist ID", 400);
 
         const playlist = await PlaylistService.getPlaylistDetails(playlistId, {
             page,
             limit,
+            ...(userId && { userId }),
         });
 
         return res.json({
