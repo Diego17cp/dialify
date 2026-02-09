@@ -8,184 +8,191 @@ datasource db {
 }
 
 model User {
-  id String @id @default(uuid())
-  email String? @unique @db.VarChar(255)
-  phone String? @unique @db.VarChar(20)
-  username String? @db.VarChar(255)
-  password String? @db.VarChar(255)
-  isAnonymous Boolean @default(false) @map("is_anonymous")
-  isActive Boolean @default(true) @map("is_active")
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
-  deletedAt DateTime? @map("deleted_at")
+  id          String    @id @default(uuid())
+  email       String?   @unique @db.VarChar(255)
+  phone       String?   @unique @db.VarChar(20)
+  username    String?   @db.VarChar(255)
+  password    String?   @db.VarChar(255)
+  isAnonymous Boolean   @default(false) @map("is_anonymous")
+  isActive    Boolean   @default(true) @map("is_active")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+  deletedAt   DateTime? @map("deleted_at")
 
-  playlists Playlist[]
-  likes Like[]
-  playbackHistories PlaybackHistory[]
+  playlists             Playlist[]
+  likes                 Like[]
+  playbackHistories     PlaybackHistory[]
   recommendationProfile RecommendationProfile?
-  searchHistories SearchHistory[]
+  searchHistories       SearchHistory[]
 
   @@map("users")
 }
+
 model Artist {
-  id Int @id @default(autoincrement())
-  name String @db.VarChar(255)
-  bio String? @db.Text
-  imageUrl String? @db.Text @map("image_url")
-  source String @db.VarChar(255)
-  sourceId String? @db.VarChar(255) @unique @map("source_id")
-  isActive Boolean @default(true) @map("is_active")
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  id        Int       @id @default(autoincrement())
+  name      String    @db.VarChar(255)
+  bio       String?   @db.Text
+  imageUrl  String?   @map("image_url") @db.Text
+  source    String    @db.VarChar(255)
+  sourceId  String?   @unique @map("source_id") @db.VarChar(255)
+  isActive  Boolean   @default(true) @map("is_active")
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
   deletedAt DateTime? @map("deleted_at")
 
   tracks TrackArtist[]
-  likes Like[]
+  likes  Like[]
 
   @@unique([source, sourceId])
   @@map("artists")
 }
+
 model Genre {
-  id Int @id @default(autoincrement())
-  name String @unique @db.VarChar(255)
-  description String? @db.Text
-  isActive Boolean @default(true) @map("is_active")
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
-  deletedAt DateTime? @map("deleted_at")
+  id          Int       @id @default(autoincrement())
+  name        String    @unique @db.VarChar(255)
+  description String?   @db.Text
+  isActive    Boolean   @default(true) @map("is_active")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+  deletedAt   DateTime? @map("deleted_at")
 
   tracks Track[]
 
   @@map("genres")
 }
-model Track {
-  id Int @id @default(autoincrement())
-  title String @db.VarChar(255)
-  duration Int
-  thumbnailUrl String? @db.Text @map("thumbnail_url")
-  source String @db.VarChar(255)
-  sourceId String? @db.VarChar(255) @map("source_id")
-  audioRef String? @db.Text @map("audio_ref")
-  genreId Int? @map("genre_id")
-  isActive Boolean @default(true) @map("is_active")
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
-  deletedAt DateTime? @map("deleted_at")
 
-  artists TrackArtist[]
-  genre Genre? @relation(fields: [genreId], references: [id])
-  playlists PlaylistTrack[]
+model Track {
+  id           Int       @id @default(autoincrement())
+  title        String    @db.VarChar(255)
+  duration     Int
+  thumbnailUrl String?   @map("thumbnail_url") @db.Text
+  source       String    @db.VarChar(255)
+  sourceId     String?   @map("source_id") @db.VarChar(255)
+  audioRef     String?   @map("audio_ref") @db.Text
+  genreId      Int?      @map("genre_id")
+  isActive     Boolean   @default(true) @map("is_active")
+  createdAt    DateTime  @default(now()) @map("created_at")
+  updatedAt    DateTime  @updatedAt @map("updated_at")
+  deletedAt    DateTime? @map("deleted_at")
+
+  artists           TrackArtist[]
+  genre             Genre?            @relation(fields: [genreId], references: [id])
+  playlists         PlaylistTrack[]
   playbackHistories PlaybackHistory[]
-  likes Like[]
+  likes             Like[]
 
   @@unique([source, sourceId])
   @@index([source, sourceId])
-
   @@map("tracks")
 }
+
 model TrackArtist {
-  trackId Int @map("track_id")
+  trackId  Int @map("track_id")
   artistId Int @map("artist_id")
 
-  track Track @relation(fields: [trackId], references: [id])
+  track  Track  @relation(fields: [trackId], references: [id])
   artist Artist @relation(fields: [artistId], references: [id])
 
   @@id([trackId, artistId])
   @@map("track_artists")
 }
-model Playlist {
-  id Int @id @default(autoincrement())
-  name String @db.VarChar(255)
-  description String? @db.Text
-  isPublic Boolean @default(false) @map("is_public")
-  ownerId String? @map("owner_id")
-  isActive Boolean @default(true) @map("is_active")
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
-  deletedAt DateTime? @map("deleted_at")
 
-  owner User? @relation(fields: [ownerId], references: [id])
+model Playlist {
+  id              Int       @id @default(autoincrement())
+  name            String    @db.VarChar(255)
+  description     String?   @db.Text
+  isPublic        Boolean   @default(false) @map("is_public")
+  isLikesPlaylist Boolean   @default(false) @map("is_likes_playlist")
+  ownerId         String?   @map("owner_id")
+  isActive        Boolean   @default(true) @map("is_active")
+  createdAt       DateTime  @default(now()) @map("created_at")
+  updatedAt       DateTime  @updatedAt @map("updated_at")
+  deletedAt       DateTime? @map("deleted_at")
+
+  owner  User?           @relation(fields: [ownerId], references: [id])
   tracks PlaylistTrack[]
-  likes Like[]
+  likes  Like[]
 
   @@map("playlists")
 }
+
 model PlaylistTrack {
-  id Int @id @default(autoincrement())
-  playlistId Int @map("playlist_id")
-  trackId Int @map("track_id")
-  orderIndex Int @map("order_index")
-  addedAt DateTime @default(now()) @map("added_at")
+  id         Int      @id @default(autoincrement())
+  playlistId Int      @map("playlist_id")
+  trackId    Int      @map("track_id")
+  orderIndex Int      @map("order_index")
+  addedAt    DateTime @default(now()) @map("added_at")
 
   playlist Playlist @relation(fields: [playlistId], references: [id])
-  track Track @relation(fields: [trackId], references: [id])
+  track    Track    @relation(fields: [trackId], references: [id])
 
   @@unique([playlistId, orderIndex])
   @@map("playlist_tracks")
 }
-model Like {
-  id Int @id @default(autoincrement())
-  userId String @map("user_id")
-  targetId Int @map("target_id")
-  targetType LikeTargetType
-  trackId Int? @map("track_id")
-  artistId Int? @map("artist_id")
-  playlistId Int? @map("playlist_id")
-  isActive Boolean @default(true) @map("is_active")
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
 
-  user User @relation(fields: [userId], references: [id])
-  track Track? @relation(fields: [trackId], references: [id])
-  artist Artist? @relation(fields: [artistId], references: [id])
+model Like {
+  id         Int            @id @default(autoincrement())
+  userId     String         @map("user_id")
+  targetId   Int            @map("target_id")
+  targetType LikeTargetType
+  trackId    Int?           @map("track_id")
+  artistId   Int?           @map("artist_id")
+  playlistId Int?           @map("playlist_id")
+  isActive   Boolean        @default(true) @map("is_active")
+  createdAt  DateTime       @default(now()) @map("created_at")
+  updatedAt  DateTime       @updatedAt @map("updated_at")
+
+  user     User      @relation(fields: [userId], references: [id])
+  track    Track?    @relation(fields: [trackId], references: [id])
+  artist   Artist?   @relation(fields: [artistId], references: [id])
   playlist Playlist? @relation(fields: [playlistId], references: [id])
 
   @@index([userId, targetType])
   @@index([trackId])
   @@index([artistId])
   @@index([playlistId])
-
   @@map("likes")
 }
-model PlaybackHistory {
-  id Int @id @default(autoincrement())
-  userId String @map("user_id")
-  trackId Int @map("track_id")
-  playedAt DateTime @default(now()) @map("played_at")
-  playDuration Int @map("play_duration")
-  createdAt DateTime @default(now()) @map("created_at")
 
-  user User @relation(fields: [userId], references: [id])
+model PlaybackHistory {
+  id           Int      @id @default(autoincrement())
+  userId       String   @map("user_id")
+  trackId      Int      @map("track_id")
+  playedAt     DateTime @default(now()) @map("played_at")
+  playDuration Int      @map("play_duration")
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  user  User  @relation(fields: [userId], references: [id])
   track Track @relation(fields: [trackId], references: [id])
 
   @@index([userId, playedAt])
   @@index([trackId])
-
   @@map("playback_histories")
 }
+
 model RecommendationProfile {
-  id Int @id @default(autoincrement())
-  userId String @unique
-  artistStats Json @map("artist_stats")
-  genreStats Json @map("genre_stats")
+  id             Int      @id @default(autoincrement())
+  userId         String   @unique
+  artistStats    Json     @map("artist_stats")
+  genreStats     Json     @map("genre_stats")
   lastComputedAt DateTime @default(now()) @map("last_computed_at")
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @updatedAt @map("updated_at")
 
   user User @relation(fields: [userId], references: [id])
 
   @@map("recommendation_profiles")
 }
+
 model SearchHistory {
-  id Int @id @default(autoincrement())
-  userId String @map("user_id")
-  query String @db.VarChar(255)
+  id         Int      @id @default(autoincrement())
+  userId     String   @map("user_id")
+  query      String   @db.VarChar(255)
   searchedAt DateTime @default(now()) @map("searched_at")
 
   user User @relation(fields: [userId], references: [id])
 
   @@index([userId, searchedAt])
-
   @@map("search_histories")
 }
 
