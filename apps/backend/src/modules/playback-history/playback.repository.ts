@@ -5,7 +5,7 @@ export class PlaybackRepository {
 	private db = DatabaseConnection.getInstance().getClient();
 
 	async create(data: {
-		userId: number;
+		userId: string;
 		trackId: number;
 		playDuration: number;
 	}): Promise<PlaybackHistory> {
@@ -13,7 +13,7 @@ export class PlaybackRepository {
 			data,
 		});
 	}
-    async existsToday(userId: number, trackId: number): Promise<boolean> {
+    async existsToday(userId: string, trackId: number): Promise<boolean> {
         const today = new Date();
         today.setHours(0, 0, 0, 0);
         const count = await this.db.playbackHistory.count({

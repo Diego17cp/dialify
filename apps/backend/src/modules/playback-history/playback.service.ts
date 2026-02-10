@@ -4,7 +4,7 @@ import { PlaybackHistoryCreate } from "./playback.types";
 
 export class PlaybackService {
     private repository = new PlaybackRepository();
-    async registerPlayback(userId: number, payload: PlaybackHistoryCreate){
+    async registerPlayback(userId: string, payload: PlaybackHistoryCreate){
         const { trackId, playDuration } = payload;
         if (playDuration < MIN_PLAY_DURATION_SECONDS) return;
         const alreadyExists = await this.repository.existsToday(userId, trackId);

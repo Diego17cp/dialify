@@ -4,7 +4,7 @@ export interface PlaybackHistoryCreate {
 }
 export interface PlaybackHistory {
     id: number;
-    userId: number;
+    userId: string;
     trackId: number;
     playDuration: number;
     playedAt: Date;
