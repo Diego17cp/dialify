@@ -155,12 +155,16 @@ model Like {
 }
 
 model PlaybackHistory {
-  id           Int      @id @default(autoincrement())
-  userId       String   @map("user_id")
-  trackId      Int      @map("track_id")
-  playedAt     DateTime @default(now()) @map("played_at")
-  playDuration Int      @map("play_duration")
-  createdAt    DateTime @default(now()) @map("created_at")
+  id             Int      @id @default(autoincrement())
+  userId         String   @map("user_id")
+  trackId        Int      @map("track_id")
+  playedAt       DateTime @default(now()) @map("played_at")
+  playDuration   Int      @map("play_duration")
+  trackDuration  Int      @map("track_duration")
+  completionRate Float    @map("completion_rate")
+  wasSkipped     Boolean  @default(false) @map("was_skipped")
+  source         String?  @db.VarChar(255)
+  createdAt      DateTime @default(now()) @map("created_at")
 
   user  User  @relation(fields: [userId], references: [id])
   track Track @relation(fields: [trackId], references: [id])
@@ -175,6 +179,9 @@ model RecommendationProfile {
   userId         String   @unique
   artistStats    Json     @map("artist_stats")
   genreStats     Json     @map("genre_stats")
+  trackStats     Json     @map("track_stats")
+  searchStats    Json     @map("search_stats")
+  diversityScore Float    @map("diversity_score")
   lastComputedAt DateTime @default(now()) @map("last_computed_at")
   createdAt      DateTime @default(now()) @map("created_at")
   updatedAt      DateTime @updatedAt @map("updated_at")
@@ -185,14 +192,14 @@ model RecommendationProfile {
 }
 
 model SearchHistory {
-  id         Int      @id @default(autoincrement())
-  userId     String   @map("user_id")
-  query      String   @db.VarChar(255)
-  searchCount Int      @default(1) @map("search_count")
-  searchedAt DateTime @default(now()) @map("searched_at")
+  id             Int      @id @default(autoincrement())
+  userId         String   @map("user_id")
+  query          String   @db.VarChar(255)
+  searchCount    Int      @default(1) @map("search_count")
+  searchedAt     DateTime @default(now()) @map("searched_at")
   lastSearchedAt DateTime @updatedAt @map("last_searched_at")
-  resultsCount Int?  @map("results_count")
-  hasPlayed Boolean @default(false) @map("has_played")
+  resultsCount   Int?     @map("results_count")
+  hasPlayed      Boolean  @default(false) @map("has_played")
 
   user User @relation(fields: [userId], references: [id])
 
