@@ -2,6 +2,7 @@ import { LikeTargetType } from "generated/prisma/enums";
 import { PlaylistRepository } from "../playlists/playlist.repository";
 import { LikesRepository } from "./like.repository";
 import { LikeToggleInput, UserLikesResponse } from "./like.types";
+import { RecommendationProfileService } from "../recommendation-profile";
 
 export class LikesService {
     private static repo = new LikesRepository();
@@ -13,12 +14,50 @@ export class LikesService {
         if (existingLike) {
             const newState = !existingLike.isActive;
             await this.repo.toggleLike(existingLike.id, newState);
-            if (targetType === "TRACK") await this.handleTrackLikePlaylist(userId, targetId, newState);
+            if (targetType === "TRACK") { 
+                await this.handleTrackLikePlaylist(userId, targetId, newState);
+                if (newState) {
+                    const track = await this.getTrackDetails(targetId);
+                    if (track) {
+                        const updateData: { type: "like"; trackId: number; artistId?: number; genreName?: string } = {
+                            type: "like",
+                            trackId: targetId,
+                        };
+                        if (track.artists[0]?.artist.id) {
+                            updateData.artistId = track.artists[0].artist.id;
+                        }
+                        if (track.genre?.name) {
+                            updateData.genreName = track.genre.name;
+                        }
+                        RecommendationProfileService.updateProfileIncremental(userId, updateData).catch(console.error);
+                    }
+                }
+            }
             return { liked: newState, action: newState ? "liked" : "unliked" };
         }
         await this.repo.create(userId, targetId, targetType);
-        if (targetType === "TRACK") await this.handleTrackLikePlaylist(userId, targetId, true);
+        if (targetType === "TRACK") {
+            await this.handleTrackLikePlaylist(userId, targetId, true);
+            const track = await this.getTrackDetails(targetId);
+            if (track) {
+                const updateData: { type: "like"; trackId: number; artistId?: number; genreName?: string } = {
+                    type: "like",
+                    trackId: targetId,
+                };
+                if (track.artists[0]?.artist.id) {
+                    updateData.artistId = track.artists[0].artist.id;
+                }
+                if (track.genre?.name) {
+                    updateData.genreName = track.genre.name;
+                }
+                RecommendationProfileService.updateProfileIncremental(userId, updateData).catch(console.error);
+            }
+        }
         return { liked: true, action: "liked" };
+    }
+    private static async getTrackDetails(trackId: number) {
+        const repo = new LikesRepository();
+        return repo.getTrackDetails(trackId);
     }
     private static async handleTrackLikePlaylist(userId: string, trackId: number, shouldAdd: boolean) {
         let likesPlaylist = await this.repo.findLikesPlaylist(userId);

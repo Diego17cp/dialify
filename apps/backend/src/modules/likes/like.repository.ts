@@ -147,4 +147,15 @@ export class LikesRepository {
             return { tracks, playlists, artists };
         });
     }
+    async getTrackDetails(trackId: number) {
+        return this.db.track.findUnique({
+            where: { id: trackId },
+            include: {
+                artists: {
+                    include: { artist: true },
+                },
+                genre: true,
+            },
+        });
+    }
 }
