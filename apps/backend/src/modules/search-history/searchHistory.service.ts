@@ -1,5 +1,6 @@
 import { AppError } from "@/core";
 import { SearchHistoryRepository } from "./searchHistory.repository";
+import { RecommendationProfileService } from "../recommendation-profile";
 
 export class SearchHistoryService {
     private static repository = new SearchHistoryRepository();
@@ -14,6 +15,10 @@ export class SearchHistoryService {
         const normalizedQuery = query.trim().toLowerCase();
         const entry = await this.repository.upsert(userId, normalizedQuery, meta);
         await this.repository.cleanupOldEntries(userId).catch(console.error);
+        RecommendationProfileService.updateProfileIncremental(userId, {
+            type: "search",
+            query: normalizedQuery,
+        }).catch(console.error);
         return entry;
     }
     static async getUserHistory(userId: string) {
@@ -28,5 +33,10 @@ export class SearchHistoryService {
     static async getUserStats(userId: string) {
         if (!userId) throw new AppError("User ID is required", 400);
         return await this.repository.getUserStats(userId);
+    }
+    static async markAsPlayed(userId: string, query: string) {
+        if (!userId || !query?.trim()) return;
+        const normalizedQuery = query.trim().toLowerCase();
+        await this.repository.markAsPlayed(userId, normalizedQuery).catch(console.error);
     }
 }

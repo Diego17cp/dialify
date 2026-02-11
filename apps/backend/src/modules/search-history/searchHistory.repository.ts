@@ -84,4 +84,15 @@ export class SearchHistoryRepository {
             take: limit,
         });
     }
+    async markAsPlayed(userId: string, query: string) {
+        await this.db.searchHistory.updateMany({
+            where: {
+                userId,
+                query,
+            },
+            data: {
+                hasPlayed: true,
+            }
+        })
+    }
 }
