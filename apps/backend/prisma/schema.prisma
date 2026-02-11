@@ -188,10 +188,15 @@ model SearchHistory {
   id         Int      @id @default(autoincrement())
   userId     String   @map("user_id")
   query      String   @db.VarChar(255)
+  searchCount Int      @default(1) @map("search_count")
   searchedAt DateTime @default(now()) @map("searched_at")
+  lastSearchedAt DateTime @updatedAt @map("last_searched_at")
+  resultsCount Int?  @map("results_count")
+  hasPlayed Boolean @default(false) @map("has_played")
 
   user User @relation(fields: [userId], references: [id])
 
+  @@unique([userId, query])
   @@index([userId, searchedAt])
   @@map("search_histories")
 }
