@@ -1,14 +1,11 @@
 import { Router } from "express";
 import { PlaybackController } from "./playback.controller";
-import { authGuard } from "@/app";
+import { authGuard } from "@/app/middlewares";
 
 const router: Router = Router();
-const controller = new PlaybackController();
 
-router.post(
-    "/register",
-    authGuard,
-    controller.register
-)
+router.post("/", authGuard, PlaybackController.recordPlayback);
+router.get("/", authGuard, PlaybackController.getUserHistory);
+router.get("/stats", authGuard, PlaybackController.getHistoryStats);
 
 export { router as playbackHistoryRoutes };
