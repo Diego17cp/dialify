@@ -1,11 +1,13 @@
 import { execa } from "execa";
 import { SearchResultDTO } from "./search.dto";
 import { YtdlpUtils } from "../utils";
+import { SearchHistoryService } from "@/modules/search-history";
 
 export class YtdlpProvider {
 	static async search(
 		query: string,
 		limit: number = 10,
+		userId?: string
 	): Promise<SearchResultDTO[]> {
 		const { stdout } = await execa("yt-dlp", [
 			`ytsearch${limit}:${query}`,
@@ -15,7 +17,7 @@ export class YtdlpProvider {
 		]);
 
 		const lines = stdout.split("\n").filter(Boolean);
-		return lines.map((line) => {
+		const results = lines.map((line) => {
 			const data = JSON.parse(line);
 			const {
 				id,
@@ -39,5 +41,14 @@ export class YtdlpProvider {
 				artists: artistsList.map((artist) => artist.name),
 			};
 		});
+		if (userId) {
+			SearchHistoryService.addEntry(userId, query, {
+				resultsCount: results.length,
+				hasPlayed: false, // We can update this later when the user plays a track from the results
+			}).catch((err) => {
+				console.error("Failed to add search history entry:", err);
+			});
+		}
+		return results;
 	}
 }

@@ -13,7 +13,7 @@ export class SearchService {
 	private static inflight: Map<string, Promise<SearchResultDTO[]>> = new Map();
 	private static refreshing = new Set<string>();
 
-	static async search(query: string): Promise<SearchResultDTO[]> {
+	static async search(query: string, userId?: string): Promise<SearchResultDTO[]> {
 		const normalized = this.normalize(query);
 		if (this.cache.has(normalized)) {
 			this.refreshInBackground(normalized);
@@ -22,7 +22,7 @@ export class SearchService {
 		if (this.inflight.has(normalized))
 			return this.inflight.get(normalized)!;
 
-		const searchPromise = YtdlpProvider.search(normalized)
+		const searchPromise = YtdlpProvider.search(normalized, 10, userId)
 			.then((res) => {
                 this.saveCache(normalized, res);
 				return res;
