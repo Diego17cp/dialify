@@ -32,6 +32,7 @@ export class FfmpegService {
             let stderr = "";
             ffmpeg.stderr.on("data", (data) => {
                 stderr += data.toString();
+                if (stderr.includes("time=")) process.stdout.write("\r" + stderr.split("\n").pop());
             });
             ffmpeg.on("close", (code) => {
                 if (code === 0) {
@@ -40,6 +41,7 @@ export class FfmpegService {
                 }
                 else {
                     console.error("FFmpeg failed with code", code, "and error:", stderr);
+                    console.error("FFmpeg stderr:", stderr);
                     reject(new Error(`FFmpeg exited with code ${code}`));
                 }
             })
@@ -50,24 +52,18 @@ export class FfmpegService {
         })
     }
     static async optimize(inputPath: string, outputPath: string) {
-        const command = `
-            ffmpeg -i "${inputPath}"
-            -vn
-            -c:a aac
-            -b:a 192k
-            -movflags +faststart
-            "${outputPath}"
-        `;
+        const command = `ffmpeg -i "${inputPath}" -vn -c:a aac -b:a 192k -movflags +faststart "${outputPath}"`;
         await execAsync(command);
     }
     static async getDuration(filePath: string): Promise<number> {
-        const { stdout } = await execAsync(
-            `ffprobe -v error
-            -show_entries format=duration
-            -of default=noprint_wrappers=1:nokey=1
-            "${filePath}"`
-        );
-        return Math.floor(parseFloat(stdout)); // Return duration in seconds as an integer
+        const comand = `ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 "${filePath}"`;
+        try {
+            const { stdout } = await execAsync(comand);
+            return Math.floor(parseFloat(stdout.trim())); // Return duration in seconds as an integer
+        } catch (error) {
+            console.error("Error getting duration:", error);
+            return 0;
+        }
     }
     static async getDirectorySize(dirPath: string): Promise<bigint> {
         try {
