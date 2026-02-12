@@ -12,7 +12,7 @@ export class IngestController {
                 errors: z.treeifyError(parsed.error)
             })
         }
-        const track = await IngestService.ingest(parsed.data);
+        const { track } = await IngestService.ingest(parsed.data);
         return res.json({
             success: true,
             data: {
