@@ -2,3 +2,6 @@ node_modules
 .env
 
 /generated/prisma
+
+# Ignore Storaged HLS and RAW directories, which can contain large media files
+/storage

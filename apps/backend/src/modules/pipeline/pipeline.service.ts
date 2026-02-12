@@ -21,9 +21,15 @@ export class PipelineService {
         if (existsSync(hlsPath)) {
             console.log(`Track ${trackId} already processed, skipping`);
             if (track.status !== TrackStatus.READY) {
-                const duration = await FfmpegService.getDuration(
-                    path.join(STORAGE_CONFIG.HLS_DIR, track.sourceId)
-                )
+                const firstSegment = path.join(
+                    STORAGE_CONFIG.HLS_DIR,
+                    track.sourceId,
+                    "stream_0",
+                    "segment_000.ts"
+                );
+                const duration = existsSync(firstSegment)
+                    ? await FfmpegService.getDuration(firstSegment)
+                    : track.duration || 0;
                 const fileSize = await FfmpegService.getDirectorySize(
                     path.join(STORAGE_CONFIG.HLS_DIR, track.sourceId)
                 )
@@ -40,8 +46,8 @@ export class PipelineService {
         const rawDir = STORAGE_CONFIG.RAW_DIR;
         const hlsDir = path.join(STORAGE_CONFIG.HLS_DIR, track.sourceId);
 
-        fs.mkdir(rawDir, { recursive: true });
-        fs.mkdir(hlsDir, { recursive: true });
+        await fs.mkdir(rawDir, { recursive: true });
+        await fs.mkdir(hlsDir, { recursive: true });
 
         let rawFilePath: string | null = null;
 
@@ -49,7 +55,10 @@ export class PipelineService {
             console.log(`Downloading track ${trackId} with sourceId ${track.sourceId}...`);
             await YtdlpService.download(track.sourceId!, rawDir);
             const files = await fs.readdir(rawDir);
-            const downloadedFile = files.find(f => f.startsWith(track.sourceId!));
+            console.log(`Downloaded files: ${files.join(", ")}`);
+            const downloadedFile = files.find(f => f.startsWith(track.sourceId!) && 
+                (f.endsWith(".mp3") || f.endsWith(".m4a") || f.endsWith(".webm") || f.endsWith(".opus") || f.endsWith(".flac") || f.endsWith(".wav"))
+            );
             if (!downloadedFile) throw new AppError(`Downloaded file for track ${trackId} not found`, 500);
 
             rawFilePath = path.join(rawDir, downloadedFile);
