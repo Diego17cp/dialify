@@ -1,3 +1,9 @@
 export { authRoutes } from './auth/auth.routes';
 export { usersRoutes } from './users/users.routes';
+export { ingestRoutes } from './ingest/ingest.routes';
+export { playlistRoutes } from './playlists/playlist.routes';
+export { likesRoutes } from './likes/like.routes';
 export { playbackHistoryRoutes } from './playback-history/playback.routes';
+export { trackRoutes } from './tracks/track.routes';
+export { recommendationProfileRoutes } from './recommendation-profile/recommendationProfile.routes';
+export { playbackSessionRoutes } from './playback-session/playbackSessions.routes';
