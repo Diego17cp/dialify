@@ -115,22 +115,19 @@ export class IngestRepository {
                             });
                         }
                     }
-                    const existingRelation = await tx.trackArtist.findUnique({
+                    await tx.trackArtist.upsert({
                         where: {
                             trackId_artistId: {
                                 trackId: track.id,
                                 artistId: artist.id,
                             },
                         },
+                        update: {}, // No fields to update; just ensure existence
+                        create: {
+                            trackId: track.id,
+                            artistId: artist.id,
+                        },
                     });
-                    if (!existingRelation) {
-                        await tx.trackArtist.create({
-                            data: {
-                                trackId: track.id,
-                                artistId: artist.id,
-                            },
-                        });
-                    }
                 }),
             );
             return track;

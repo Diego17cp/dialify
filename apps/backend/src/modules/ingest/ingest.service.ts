@@ -1,4 +1,5 @@
-import { pipelineQueue } from "../pipeline";
+// import { pipelineQueue } from "../pipeline";
+import { pipelineMemoryQueue } from "../pipeline";
 import { IngestDTO } from "./ingest.dto";
 import { IngestRepository } from "./ingest.repository";
 import { YtdlpIngestProvider } from "./ytdlp.ingest.provider";
@@ -22,7 +23,15 @@ export class IngestService {
             artists: meta.artists,
             genres: meta.genres,
         });
-        await pipelineQueue.add("process-track", {
+
+        // USE THIS WHEN WE HAVE A PROPER QUEUE IMPLEMENTATION WITH BULLMQ WITH REDIS
+
+        // await pipelineQueue.add("process-track", {
+        //     trackId: track.id,
+        // });
+
+        // TEMPORARY IN-MEMORY QUEUE FOR TESTING
+        await pipelineMemoryQueue.add({
             trackId: track.id,
         });
         return {
