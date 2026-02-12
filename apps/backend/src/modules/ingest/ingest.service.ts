@@ -1,3 +1,4 @@
+import { pipelineQueue } from "../pipeline";
 import { IngestDTO } from "./ingest.dto";
 import { IngestRepository } from "./ingest.repository";
 import { YtdlpIngestProvider } from "./ytdlp.ingest.provider";
@@ -5,6 +6,12 @@ import { YtdlpIngestProvider } from "./ytdlp.ingest.provider";
 export class IngestService {
     private static repo = new IngestRepository();
     static async ingest(input: IngestDTO) {
+        const existing = await this.repo.exists("youtube", input.sourceId);
+        if (existing) return {
+            track: existing,
+            status: existing.status,
+            alreadyExists: true,
+        }
         const meta = await YtdlpIngestProvider.fetchMetadata(input.sourceId);
         const track = await this.repo.createTrackAndArtist({
             source: meta.provider,
@@ -14,7 +21,14 @@ export class IngestService {
             thumbnailUrl: meta.thumbnailUrl,
             artists: meta.artists,
             genres: meta.genres,
-        })
-        return track;
+        });
+        await pipelineQueue.add("process-track", {
+            trackId: track.id,
+        });
+        return {
+            track,
+            status: track.status,
+            alreadyExists: false,
+        };
     }
 }
