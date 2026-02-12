@@ -144,7 +144,7 @@ export class RecommendationProfileRepository {
         
         if (exploreCount > 0) {
             const excludeClause = excludeTrackIds.length > 0 
-                ? `WHERE id NOT IN (${excludeTrackIds.join(",")})`
+                ? `WHERE t.id NOT IN (${excludeTrackIds.join(",")})`
                 : '';
             
             exploreTracks = await this.db.$queryRawUnsafe(`
