@@ -5,7 +5,7 @@ import cookieParser from 'cookie-parser';
 import { env } from '@/config';
 import { DatabaseConnection } from '@/config';
 import router from './routes';
-import { errorHandler } from './middlewares/errorHandler';
+import { errorHandler, staticMiddleware } from './middlewares';
 
 
 export const app: Application = express();
@@ -30,4 +30,5 @@ app.get('/', (_, res) => {
 })
 
 app.use("/api", router);
+app.use(staticMiddleware);
 app.use(errorHandler);
