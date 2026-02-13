@@ -1,0 +1,25 @@
+:root {
+    --brand-primary: #085691;
+    --brand-primary-light: #0A6DB8;
+    --brand-primary-dark: #063E6A;
+    --accent: #CC8550;
+    --accent-light: #E09B6A;
+    --accent-dark: #A86636;
+}
+
+@import "tailwindcss";
+@plugin "tailwindcss-scrollbar";
+
+@theme {
+    --color-brand-primary: var(--brand-primary);
+    --color-brand-primary-light: var(--brand-primary-light);
+    --color-brand-primary-dark: var(--brand-primary-dark);
+    --color-accent: var(--accent);
+    --color-accent-light: var(--accent-light);
+    --color-accent-dark: var(--accent-dark);
+}
+
+html {
+    scroll-behavior: smooth;
+    font-family: "Onest Variable", sans-serif;
+}
