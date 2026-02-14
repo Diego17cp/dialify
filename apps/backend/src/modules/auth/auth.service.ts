@@ -1,7 +1,6 @@
 import { DatabaseConnection } from "@/config";
 import { AppError, hashPassword, verifyPassword } from "@/core";
 import { generateTokens, parseUser, verifyRefreshToken } from "./auth.utils";
-import { User } from "../users/user.model";
 import { AuthResponse } from "./auth.types";
 import { UsersRepository } from "../users/users.repository";
 import { consumeResetToken, createResetToken } from "./forgot-password";
