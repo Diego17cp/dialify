@@ -5,6 +5,9 @@ const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 const apiClient = axios.create({
     baseURL: `${BASE_URL}`,
     withCredentials: true,
+    headers: {
+        "X-Client-Platform": "web",
+    }
 })
 apiClient.interceptors.response.use(
     response => response,
