@@ -20,23 +20,23 @@ export const useAuth = () => {
     }
     const login = async (credentials: { email: string; password: string }): Promise<User> => {
         const res = await apiClient.post("/auth/login", credentials);
-        if (!res.data.success || !res.data.user) showError("Login failed", res);
-        return res.data.user;
+        if (!res.data.success || !res.data.data?.user) showError("Login failed", res);
+        return res.data.data.user;
     }
     const register = async (data: { email: string; password: string; username?: string; phone?: string }): Promise<User> => {
         const res = await apiClient.post("/auth/register", data);
-        if (!res.data.success || !res.data.user) showError("Registration failed", res);
-        return res.data.user;
+        if (!res.data.success || !res.data.data?.user) showError("Registration failed", res);
+        return res.data.data.user;
     }
     const anonymousLogin = async (): Promise<User> => {
         const res = await apiClient.post("/auth/anonymous");
-        if (!res.data.success || !res.data.user) showError("Anonymous login failed", res);
-        return res.data.user;
+        if (!res.data.success || !res.data.data?.user) showError("Anonymous login failed", res);
+        return res.data.data.user;
     }
     const convertAnonymous = async (data: { email: string; password: string; username?: string; phone?: string }): Promise<User> => {
         const res = await apiClient.post("/auth/convert", data);
-        if (!res.data.success || !res.data.user) showError("Conversion failed", res);
-        return res.data.user;
+        if (!res.data.success || !res.data.data?.user) showError("Conversion failed", res);
+        return res.data.data.user;
     }
     const logout = async () => {
         const res = await apiClient.post("/auth/logout");
