@@ -13,7 +13,7 @@ export const app: Application = express();
 app.use(cors({
     origin: env.FRONTEND_URL,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
+    allowedHeaders: ['Content-Type', 'Authorization', "X-Client-Platform"],
     credentials: true,
 }))
 app.use(helmet());
