@@ -9,6 +9,8 @@
 
 @import "tailwindcss";
 @plugin 'tailwind-scrollbar';
+@plugin "./hero.ts";
+@source "../../../node_modules/@heroui/theme/dist/**/*.{js, ts, tsx, jsx}";
 
 
 @theme {
