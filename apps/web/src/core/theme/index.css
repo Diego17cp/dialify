@@ -8,7 +8,8 @@
 }
 
 @import "tailwindcss";
-@plugin "tailwindcss-scrollbar";
+@plugin 'tailwind-scrollbar';
+
 
 @theme {
     --color-brand-primary: var(--brand-primary);
