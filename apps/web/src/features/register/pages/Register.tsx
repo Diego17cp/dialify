@@ -1,9 +1,10 @@
-import { Link } from "react-router";
+import { Link, Navigate } from "react-router";
 import { FaGithub, FaGoogle, FaEye, FaEyeSlash, FaArrowLeft, FaUserSecret } from "react-icons/fa";
 import whiteLogo from "@/assets/dialify-white-logo.webp";
 import { toast } from "sonner";
 import { useRegister } from "../hooks/useRegister";
 import { motion, AnimatePresence } from "motion/react";
+import { useAuthStore } from "@/features/auth";
 
 export const RegisterPage = () => {
     const {
@@ -26,6 +27,9 @@ export const RegisterPage = () => {
         handleAnonymousLogin,
         isAnonymousLoading
     } = useRegister();
+
+    const { isAuthenticated } = useAuthStore();
+    if (isAuthenticated && !localStorage.getItem("isAnonymous")) return <Navigate to="/" replace />
 
     const handleGoogleSignUp = () => toast.info("Google sign-up is not implemented yet.");
     const handleGithubSignUp = () => toast.info("GitHub sign-up is not implemented yet.");

@@ -4,9 +4,11 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type { AxiosResponse } from "axios";
 import { useAuthStore } from "../store/auth.store";
 import { toast } from "sonner";
+import { useNavigate } from "react-router";
 
 export const useAuth = () => {
     const queryClient = useQueryClient();
+    const navigate = useNavigate();
     const showError = (message: string, res: AxiosResponse) => {
         throw new Error(message || res.data.message || res.data.error || "An error occurred");
     }
@@ -48,6 +50,8 @@ export const useAuth = () => {
         onSuccess: (user) => {
             useAuthStore.getState().setUser(user);
             queryClient.invalidateQueries({ queryKey: ["auth", "me"] });
+            navigate("/", { replace: true });
+            toast.success("Welcome back!");
         },
         onError: (error: ApiError) => showApiError(error, "Login failed")
     });
@@ -56,6 +60,8 @@ export const useAuth = () => {
         onSuccess: (user) => {
             useAuthStore.getState().setUser(user);
             queryClient.invalidateQueries({ queryKey: ["auth", "me"] });
+            navigate("/", { replace: true });
+            toast.success("Account created successfully!");
         },
         onError: (error: ApiError) => showApiError(error, "Registration failed")
     });
@@ -65,6 +71,8 @@ export const useAuth = () => {
             useAuthStore.getState().setUser(user);
             localStorage.setItem("isAnonymous", "true");
             queryClient.invalidateQueries({ queryKey: ["auth", "me"] });
+            navigate("/");
+            toast.success("Welcome! You're browsing as a guest.");
         },
         onError: (error: ApiError) => showApiError(error, "Anonymous login failed")
     });
@@ -74,6 +82,8 @@ export const useAuth = () => {
             useAuthStore.getState().setUser(user);
             localStorage.removeItem("isAnonymous");
             queryClient.invalidateQueries({ queryKey: ["auth", "me"] });
+            navigate("/");
+            toast.success("Account converted successfully!");
         },
         onError: (error: ApiError) => showApiError(error, "Conversion failed")
     });
@@ -82,6 +92,8 @@ export const useAuth = () => {
         onSuccess: () => {
             useAuthStore.getState().clearAuth();
             queryClient.clear();
+            navigate("/auth/login", { replace: true });
+            toast.success("Logged out successfully");
         },
         onError: () => {
             useAuthStore.getState().clearAuth();

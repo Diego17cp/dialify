@@ -1,11 +1,8 @@
 import { togglePasswordVisibility } from "@/shared/utils";
 import { useState } from "react";
 import { useAuth } from "@/features/auth/hooks/useAuth";
-import { useNavigate } from "react-router";
-import { toast } from "sonner";
 
 export const useRegister = () => {
-    const navigate = useNavigate();
     const { useRegisterMutation, useAnonymousLoginMutation, useConvertAnonymousMutation } = useAuth();
     
     const [step, setStep] = useState<1 | 2>(1);
@@ -93,50 +90,24 @@ export const useRegister = () => {
         }
 
         if (localStorage.getItem("isAnonymous") === "true") {
-            useConvertAnonymousMutation.mutate(
-                {
-                    email,
-                    password,
-                    ...(username && { username }),
-                    ...(phone && { phone }),
-                },
-                {
-                    onSuccess: () => {
-                        toast.success("Account created successfully!");
-                        navigate("/");
-                    }
-                }
-            )
+            useConvertAnonymousMutation.mutate({
+                email,
+                password,
+                ...(username && { username }),
+                ...(phone && { phone }),
+            });
         } else {
-            useRegisterMutation.mutate(
-                {
-                    email,
-                    password,
-                    ...(username && { username }),
-                    ...(phone && { phone }),
-                },
-                {
-                    onSuccess: () => {
-                        toast.success("Account created successfully!");
-                        navigate("/");
-                    },
-                }
-            );
+            useRegisterMutation.mutate({
+                email,
+                password,
+                ...(username && { username }),
+                ...(phone && { phone }),
+            });
         }
 
     };
 
-    const handleAnonymousLogin = () => {
-        useAnonymousLoginMutation.mutate(undefined, {
-            onSuccess: () => {
-                toast.success("Welcome! You're browsing as a guest.");
-                navigate("/");
-            },
-            onError: () => {
-                toast.error("Failed to create anonymous session");
-            }
-        });
-    }
+    const handleAnonymousLogin = () => useAnonymousLoginMutation.mutate();
 
     return {
         step,

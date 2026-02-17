@@ -8,6 +8,7 @@ let failedQueue: Array<{
 }> = [];
 
 let hasRedirected = false;
+let interceptorsSetUp = false;
 
 const processQueue = (error: Error | null) => {
     failedQueue.forEach((prom) => {
@@ -34,6 +35,8 @@ const handleLogout = () => {
 };
 
 export const setupAuthInterceptor = () => {
+    if (interceptorsSetUp) return;
+    interceptorsSetUp = true;
     apiClient.interceptors.response.use(
         (response) => response,
         async (err) => {
