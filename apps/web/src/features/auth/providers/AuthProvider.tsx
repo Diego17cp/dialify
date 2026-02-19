@@ -3,6 +3,7 @@ import { useAuthStore } from "../store/auth.store"
 import { apiClient, setupAuthInterceptor } from "@/core/api";
 import { useQuery } from "@tanstack/react-query";
 import type { User } from "@/core/types";
+import { AppLoader } from "@/core/components";
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const { setUser, clearAuth } = useAuthStore();
@@ -24,7 +25,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         if (data) setUser(data);
         else if (!isLoading && isError) clearAuth();
     }, [data, isLoading, isError, setUser, clearAuth]);
-    // TODO: Add a better loading state (skeletons, etc.)
-    if (isLoading) return <div>Loading...</div>;
+    if (isLoading) return <AppLoader />;
     return <>{children}</>;
 }
