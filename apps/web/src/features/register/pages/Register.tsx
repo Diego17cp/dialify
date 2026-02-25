@@ -29,6 +29,7 @@ export const RegisterPage = () => {
     } = useRegister();
 
     const { isAuthenticated } = useAuthStore();
+    const isAnonymous =	localStorage.getItem("isAnonymous") === "true";
     if (isAuthenticated && !localStorage.getItem("isAnonymous")) return <Navigate to="/" replace />
 
     const handleGoogleSignUp = () => toast.info("Google sign-up is not implemented yet.");
@@ -76,7 +77,6 @@ export const RegisterPage = () => {
             >
                 <img src={whiteLogo} alt="Dialify" className="h-25 mx-auto" />
             </motion.div>
-
             <motion.div 
                 className="w-full max-w-md backdrop-blur-sm rounded-2xl p-8 md:p-10 pt-0 md:pt-0"
                 initial={{ opacity: 0, scale: 0.95 }}
@@ -99,7 +99,6 @@ export const RegisterPage = () => {
                             </motion.button>
                         )}
                     </AnimatePresence>
-
                     <div className="flex justify-center gap-2 mb-4">
                         <motion.div 
                             className={`h-1 w-12 rounded-full`}
@@ -116,7 +115,6 @@ export const RegisterPage = () => {
                             transition={{ duration: 0.3 }}
                         />
                     </div>
-
                     <motion.h1 
                         className="text-3xl md:text-4xl font-bold text-white mb-2"
                         key={`title-${step}`}
@@ -136,7 +134,6 @@ export const RegisterPage = () => {
                         {step === 1 ? "listening for free" : "Step 2 of 2"}
                     </motion.p>
                 </div>
-
                 <AnimatePresence mode="wait">
                     {step === 1 && (
                         <motion.div
@@ -157,7 +154,6 @@ export const RegisterPage = () => {
                                     <FaGoogle className="text-xl" />
                                     <span>Sign up with Google</span>
                                 </motion.button>
-
                                 <motion.button
                                     onClick={handleGithubSignUp}
                                     className="w-full cursor-pointer flex items-center justify-center gap-3 bg-transparent border border-gray-700 hover:border-gray-600 text-white font-medium py-3 px-4 rounded-full transition-colors duration-200"
@@ -169,29 +165,40 @@ export const RegisterPage = () => {
                                     <span>Sign up with GitHub</span>
                                 </motion.button>
                             </motion.div>
-
                             <motion.div variants={itemVariants} className="mb-6">
-                                <motion.button
-                                    onClick={handleAnonymousLogin}
-                                    disabled={isAnonymousLoading}
-                                    className="w-full cursor-pointer flex items-center justify-center gap-3 bg-linear-to-r from-accent-light to-accent hover:from-accent hover:to-accent-dark disabled:opacity-50 disabled:cursor-not-allowed text-white font-medium py-3 px-4 rounded-full transition-colors duration-200 shadow-lg shadow-accent/20"
-                                    variants={buttonHoverVariants}
-                                    whileHover={!isAnonymousLoading ? "hover" : {}}
-                                    whileTap={!isAnonymousLoading ? "tap" : {}}
-                                >
-                                    <FaUserSecret className="text-xl" />
-                                    <span>{isAnonymousLoading ? "Starting..." : "Continue as Guest"}</span>
-                                </motion.button>
-                                <motion.p 
-                                    className="text-gray-500 text-xs text-center mt-2"
-                                    initial={{ opacity: 0 }}
-                                    animate={{ opacity: 1 }}
-                                    transition={{ delay: 0.5 }}
-                                >
-                                    No email required • You can upgrade later
-                                </motion.p>
+                                {!isAnonymous ? (
+                                    <>
+                                    <motion.button
+                                        onClick={handleAnonymousLogin}
+                                        disabled={isAnonymousLoading}
+                                        className="w-full cursor-pointer flex items-center justify-center gap-3 bg-linear-to-r from-accent-light to-accent hover:from-accent hover:to-accent-dark disabled:opacity-50 disabled:cursor-not-allowed text-white font-medium py-3 px-4 rounded-full transition-colors duration-200 shadow-lg shadow-accent/20"
+                                        variants={buttonHoverVariants}
+                                        whileHover={!isAnonymousLoading ? "hover" : {}}
+                                        whileTap={!isAnonymousLoading ? "tap" : {}}
+                                    >
+                                        <FaUserSecret className="text-xl" />
+                                        <span>{isAnonymousLoading ? "Starting..." : "Continue as Guest"}</span>
+                                    </motion.button>
+                                    <motion.p 
+                                        className="text-gray-500 text-xs text-center mt-2"
+                                        initial={{ opacity: 0 }}
+                                        animate={{ opacity: 1 }}
+                                        transition={{ delay: 0.5 }}
+                                    >
+                                        No email required • You can upgrade later
+                                    </motion.p>
+                                    </>
+                                ): (
+                                    <motion.p
+                                        className="text-gray-500 text-xs text-center mt-2"
+                                        initial={{ opacity: 0 }}
+                                        animate={{ opacity: 1 }}
+                                        transition={{ delay: 0.5 }}
+                                    >
+                                        You are continuing as Guest
+                                    </motion.p>
+                                )}
                             </motion.div>
-
                             <motion.div variants={itemVariants} className="relative my-8">
                                 <div className="absolute inset-0 flex items-center">
                                     <div className="w-full border-t border-gray-800"></div>
@@ -202,7 +209,6 @@ export const RegisterPage = () => {
                                     </span>
                                 </div>
                             </motion.div>
-
                             <motion.form 
                                 onSubmit={(e) => { e.preventDefault(); handleNextStep(); }}
                                 className="space-y-6"
@@ -234,7 +240,6 @@ export const RegisterPage = () => {
                                         )}
                                     </AnimatePresence>
                                 </motion.div>
-
                                 <motion.div variants={itemVariants}>
                                     <label htmlFor="password" className="block text-white font-semibold mb-2 text-sm">
                                         Password
@@ -272,7 +277,6 @@ export const RegisterPage = () => {
                                         )}
                                     </AnimatePresence>
                                 </motion.div>
-
                                 <motion.button
                                     type="submit"
                                     className="w-full cursor-pointer bg-brand-primary hover:bg-brand-primary-light text-white font-bold py-3 px-6 rounded-full transition-colors duration-200 shadow-lg shadow-brand-primary/20"
@@ -285,7 +289,6 @@ export const RegisterPage = () => {
                             </motion.form>
                         </motion.div>
                     )}
-
                     {step === 2 && (
                         <motion.div
                             key="step2"
@@ -308,7 +311,6 @@ export const RegisterPage = () => {
                                         className="w-full bg-gray-900/50 border border-gray-700 text-white placeholder-gray-500 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-transparent transition-all ease-in-out duration-200"
                                     />
                                 </motion.div>
-
                                 <motion.div variants={itemVariants}>
                                     <label htmlFor="phone" className="block text-white font-semibold mb-2 text-sm">
                                         Phone number <span className="text-gray-500 text-xs font-normal">(optional)</span>
@@ -335,7 +337,6 @@ export const RegisterPage = () => {
                                         )}
                                     </AnimatePresence>
                                 </motion.div>
-
                                 <motion.button
                                     type="submit"
                                     disabled={isLoading}
@@ -350,14 +351,12 @@ export const RegisterPage = () => {
                         </motion.div>
                     )}
                 </AnimatePresence>
-
                 <motion.hr 
                     className="my-8 border-t border-gray-800"
                     initial={{ scaleX: 0 }}
                     animate={{ scaleX: 1 }}
                     transition={{ duration: 0.5, delay: 0.8 }}
                 />
-
                 <motion.div 
                     className="text-center"
                     initial={{ opacity: 0 }}
@@ -373,7 +372,6 @@ export const RegisterPage = () => {
                     </Link>
                 </motion.div>
             </motion.div>
-
             <motion.div 
                 className="mt-8 text-center text-gray-500 text-xs"
                 initial={{ opacity: 0 }}
