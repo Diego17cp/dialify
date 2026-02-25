@@ -3,7 +3,6 @@ import { motion, AnimatePresence } from "motion/react"
 import { UserMenuItem } from "./UserMenuItem"
 import { LuLogOut } from "react-icons/lu"
 import defaultPfp from "@/assets/default-pfp.webp";
-import { FaSignInAlt } from "react-icons/fa";
 import { PiUserCircleGearFill } from "react-icons/pi";
 import { RiUser3Fill } from "react-icons/ri";
 import { useAuth } from "@/features/auth";
@@ -12,11 +11,6 @@ export const UserMenu = () => {
     const [isVisible, setIsVisible] = useState(false)
     const toggleMenu = () => setIsVisible(!isVisible)
     const navLinks = [
-        {
-            to: "/auth/login",
-            label: "Log in",
-            icon: <FaSignInAlt className="text-xl" />,
-        },
         {
             to: "/account",
             label: "View Account",

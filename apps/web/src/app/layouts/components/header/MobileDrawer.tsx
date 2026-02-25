@@ -20,7 +20,7 @@ const isAuthenticated = useAuthStore.getState().isAuthenticated;
 const navLinks = [
     { to: "/", label: "Home", icon: <AiFillHome /> },
     {
-        to: "/auth/register",
+        to: "/register",
         label: "Sign up",
         icon: <FaUserPlus />,
         show:
