@@ -17,7 +17,7 @@ export const MobileHeader = ({ isDrawerOpen, toggleDrawer, closeDrawer }: Mobile
 
     return (
         <>
-            <header className="md:hidden flex items-center justify-between px-4 py-3 bg-black/90 backdrop-blur-md border-b border-gray-800/50 sticky top-0 z-40">
+            <header className="md:hidden flex items-center justify-between px-4 py-3 bg-black/90 backdrop-blur-md border-b border-gray-800/50 w-full">
                 <Link to="/">
                     <img
                         src={whiteLogo}
