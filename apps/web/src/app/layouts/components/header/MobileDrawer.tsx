@@ -15,38 +15,6 @@ type MobileDrawerProps = {
     onClose: () => void;
 };
 
-const isAuthenticated = useAuthStore.getState().isAuthenticated;
-
-const navLinks = [
-    { to: "/", label: "Home", icon: <AiFillHome /> },
-    {
-        to: "/register",
-        label: "Sign up",
-        icon: <FaUserPlus />,
-        show:
-            !localStorage.getItem("isAnonymous") ||
-            localStorage.getItem("isAnonymous") === "false",
-    },
-    {
-        to: "/auth/login",
-        label: "Log in",
-        icon: <FaSignInAlt />,
-        show: !isAuthenticated,
-    },
-    {
-        to: "/account",
-        label: "View Account",
-        icon: <PiUserCircleGearFill />,
-        show: isAuthenticated,
-    },
-    {
-        to: "/profile",
-        label: "Profile",
-        icon: <RiUser3Fill />,
-        show: isAuthenticated,
-    },
-];
-
 const externalLinks = [
     {
         href: EXTERNAL_LINKS.github_repo,
@@ -69,6 +37,38 @@ const externalLinks = [
 ];
 
 export const MobileDrawer = ({ isOpen, onClose }: MobileDrawerProps) => {
+    const { isAuthenticated } = useAuthStore();
+
+    const navLinks = [
+        { to: "/", label: "Home", icon: <AiFillHome /> },
+        {
+            to: "/register",
+            label: "Sign up",
+            icon: <FaUserPlus />,
+            show:
+                !localStorage.getItem("isAnonymous") ||
+                localStorage.getItem("isAnonymous") === "false",
+        },
+        {
+            to: "/auth/login",
+            label: "Log in",
+            icon: <FaSignInAlt />,
+            show: !isAuthenticated,
+        },
+        {
+            to: "/account",
+            label: "View Account",
+            icon: <PiUserCircleGearFill />,
+            show: isAuthenticated,
+        },
+        {
+            to: "/profile",
+            label: "Profile",
+            icon: <RiUser3Fill />,
+            show: isAuthenticated,
+        },
+    ];
+    
     const currentYear = new Date().getFullYear();
 
     const { useLogoutMutation } = useAuth();
