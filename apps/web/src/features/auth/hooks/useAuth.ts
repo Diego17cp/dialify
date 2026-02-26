@@ -49,6 +49,7 @@ export const useAuth = () => {
         mutationFn: login,
         onSuccess: (user) => {
             useAuthStore.getState().setUser(user);
+            localStorage.removeItem("isAnonymous");
             queryClient.invalidateQueries({ queryKey: ["auth", "me"] });
             navigate("/", { replace: true });
             toast.success("Welcome back!");
