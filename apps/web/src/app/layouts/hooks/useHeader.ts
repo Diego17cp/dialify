@@ -20,9 +20,6 @@ export const useHeader = () => {
         window.addEventListener("resize", handleResize);
         return () => window.removeEventListener("resize", handleResize);
     }, []);
-    useEffect(() => {
-        if (isSearchOpen && !isLg && searchInputRef.current) searchInputRef.current.focus();
-    }, [isSearchOpen, isLg]);
 
     const toggleSearch = () => {
         if (isLg) return;
@@ -35,12 +32,8 @@ export const useHeader = () => {
 
     const handleSearchSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        // TODO: Implementar búsqueda
+        searchInputRef.current?.blur();
     };
-
-    useEffect(() => {
-        if (isSearchOpen && searchInputRef.current) searchInputRef.current.focus();
-    }, [isSearchOpen]);
     useEffect(() => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
         closeDrawer();
