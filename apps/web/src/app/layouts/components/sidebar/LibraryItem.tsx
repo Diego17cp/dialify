@@ -1,24 +1,35 @@
 import { motion, AnimatePresence } from "motion/react";
-import { FaMusic } from "react-icons/fa";
 import { RiUserFill } from "react-icons/ri";
 import { MdQueueMusic } from "react-icons/md";
-import type { LibraryItem as LibraryItemType } from "../../types/sidebar.types";
-import { PiMusicNoteFill } from "react-icons/pi";
+import type { LibrarySidebarItem } from "../../types/sidebar.types";
+import { PiHeartFill, PiMusicNoteFill } from "react-icons/pi";
 
 type Props = {
-    item: LibraryItemType;
+    item: LibrarySidebarItem;
     isExpanded: boolean;
     index: number;
 };
 
-const typeIcon = {
-    playlist: <MdQueueMusic className="text-xs text-gray-400" />,
-    album: <FaMusic className="text-xs text-gray-400" />,
-    artist: <RiUserFill className="text-xs text-gray-400" />,
+const TypeIcon = ({ type }: { type: LibrarySidebarItem["type"] }) => {
+    switch (type) {
+        case "likes_playlist": return <PiHeartFill className="text-xs text-brand-primary" />;
+        case "artist":         return <RiUserFill className="text-xs text-gray-400" />;
+        case "playlist":
+        case "owned_playlist": return <MdQueueMusic className="text-xs text-gray-400" />;
+    }
+};
+const typeSubtitle: Record<LibrarySidebarItem["type"], string> = {
+    likes_playlist: "Playlist",
+    playlist: "Playlist",
+    owned_playlist: "Playlist",
+    artist: "Artist",
 };
 
 export const LibraryItem = ({ item, isExpanded, index }: Props) => {
+    const isArtist = item.type === "artist";
+    const isLikes = item.type === "likes_playlist";
     return (
+        // TODO: Add navigation functionality to show the library item details when clicked
         <motion.button
             className="w-full flex items-center gap-3 px-2 py-2 rounded-lg hover:bg-gray-800/60 transition-colors duration-150 cursor-pointer group text-left"
             title={!isExpanded ? item.title : undefined}
@@ -27,7 +38,9 @@ export const LibraryItem = ({ item, isExpanded, index }: Props) => {
             transition={{ delay: index * 0.03, duration: 0.2 }}
             whileTap={{ scale: 0.98 }}
         >
-            <div className={`shrink-0 overflow-hidden bg-gray-800 ${item.type === "artist" ? "rounded-full" : "rounded-md"} ${isExpanded ? "size-10" : "size-9"}`}>
+            <div
+                className={`shrink-0 overflow-hidden ${isArtist ? "rounded-full" : "rounded-md"} ${isLikes ? "bg-linear-to-br from-brand-primary/80 via-brand-light to-accent/65" : "bg-gray-800"} ${isExpanded ? "size-10" : "size-9"}`}
+            >
                 {item.coverUrl ? (
                     <img
                         src={item.coverUrl}
@@ -36,7 +49,10 @@ export const LibraryItem = ({ item, isExpanded, index }: Props) => {
                     />
                 ) : (
                     <div className="w-full h-full flex items-center justify-center">
-                        <PiMusicNoteFill className="text-gray-500 text-xl" />
+                        {isLikes
+                            ? <PiHeartFill className="text-white text-xl" />
+                            : <PiMusicNoteFill className="text-gray-500 text-xl" />
+                        }
                     </div>
                 )}
             </div>
@@ -49,13 +65,13 @@ export const LibraryItem = ({ item, isExpanded, index }: Props) => {
                         exit={{ opacity: 0, width: 0 }}
                         transition={{ duration: 0.2 }}
                     >
-                        <span className="text-white text-sm font-medium truncate group-hover:text-accent-light transition-colors">
+                        <span className={`text-sm font-medium truncate transition-colors group-hover:text-accent-light ${isLikes ? "text-white" : "text-gray-300"}`}>
                             {item.title}
                         </span>
                         <div className="flex items-center gap-1">
-                            {typeIcon[item.type]}
+                            <TypeIcon type={item.type} />
                             <span className="text-gray-500 text-xs truncate">
-                                {item.subtitle}
+                                {item.subtitle ?? typeSubtitle[item.type]}
                             </span>
                         </div>
                     </motion.div>

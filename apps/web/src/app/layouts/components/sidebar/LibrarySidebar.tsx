@@ -10,8 +10,6 @@ import { LibrarySkeleton } from "./LibrarySkeleton";
 
 type LibrarySidebarProps = ReturnType<typeof useLibrarySidebar>;
 
-
-
 export const LibrarySidebar = ({
     isExpanded, 
     width,
