@@ -6,9 +6,10 @@ import {
     LIBRARY_MIN_WIDTH,
     LIBRARY_SIDEBAR_KEY,
 } from "../constants/sidebar.constants";
-import type { LibrarySidebarState, LibraryStatus } from "../types/sidebar.types";
+import type { LibrarySidebarItem, LibrarySidebarState, LibraryStatus } from "../types/sidebar.types";
 import { useAuthStore } from "@/features/auth";
-import { MOCK_LIBRARY_ITEMS } from "../mocks/library.mock";
+import { useQuery } from "@tanstack/react-query";
+import { libraryService } from "../services/library.service";
 
 const getInitialState = (): LibrarySidebarState => {
     const saved = localStorage.getItem(LIBRARY_SIDEBAR_KEY);
@@ -30,20 +31,65 @@ export const useLibrarySidebar = () => {
     const isExpanded = state === "expanded";
 
     const { isAuthenticated } = useAuthStore();
-    const isAnonymouse = localStorage.getItem("isAnonymouse") && localStorage.getItem("isAnonymouse") === "true";
-    // This variables would come from TQ
-    // TODO: Implement fetch with TQ and replace these hardcoded values
-    const isLoading = false;
-    const isError = false;
-    const items = MOCK_LIBRARY_ITEMS;
-
+    const isAnonymous = localStorage.getItem("isAnonymous") && localStorage.getItem("isAnonymous") === "true";
+    const { data, isLoading, isError } = useQuery({
+        queryKey: ["library"],
+        queryFn: libraryService.getLibraryItems,
+        enabled: isAuthenticated && !isAnonymous,
+        staleTime: 1000 * 60 * 5,
+        retry: false,
+    });
+    const items = useMemo((): LibrarySidebarItem[] => {
+        if (!data?.data) return [];
+        const { likesPlaylist, items: mixedItems, ownedPlaylists } = data.data;
+        const result: LibrarySidebarItem[] = [];
+        if (likesPlaylist) {
+            result.push({
+                id: likesPlaylist.id.toString(),
+                type: "likes_playlist",
+                title: likesPlaylist.name,
+                subtitle: `${likesPlaylist.trackCount} ${likesPlaylist.trackCount === 1 ? "song" : "songs"}`,
+                coverUrl: "",
+                isPinned: true
+            });
+        }
+        for (const item of mixedItems) {
+            if (item.type === "playlist") {
+                result.push({
+                    id: item.id.toString(),
+                    type: "playlist",
+                    title: item.name,
+                    subtitle: `${item.trackCount} ${item.trackCount === 1 ? "song" : "songs"}`,
+                    coverUrl: item.coverImageUrl,
+                });
+            } else if (item.type === "artist") {
+                result.push({
+                    id: item.id.toString(),
+                    type: "artist",
+                    title: item.name,
+                    subtitle: "Artist",
+                    coverUrl: item.imageUrl,
+                })
+            }
+        }
+        for (const playlist of ownedPlaylists) {
+            result.push({
+                id: playlist.id.toString(),
+                type: "owned_playlist",
+                title: playlist.name,
+                subtitle: `${playlist.trackCount} ${playlist.trackCount === 1 ? "song" : "songs"}`,
+                coverUrl: playlist.coverImageUrl,
+            })
+        }
+        return result;
+    }, [data]);
     const status = useMemo((): LibraryStatus => {
-        if (!isAuthenticated && isAnonymouse) return "unauthenticated";
+        if (!isAuthenticated && isAnonymous) return "unauthenticated";
         if (isLoading) return "loading";
         if (isError) return "error";
         if (items.length === 0) return "empty";
         return "ok";
-    }, [isAuthenticated, isAnonymouse, isLoading, isError, items.length]);
+    }, [isAuthenticated, isAnonymous, isLoading, isError, items]);
     const canCollapse = status === "ok";
     useEffect(() => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
