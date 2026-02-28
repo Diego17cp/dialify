@@ -7,5 +7,6 @@ const controller = new UsersController();
 
 router.put("/profile", authGuard, controller.updateProfile);
 router.get("/delete-account", authGuard, controller.deleteAccount);
+router.get("/library", authGuard, controller.getUserLibrary);
 
 export { router as usersRoutes };

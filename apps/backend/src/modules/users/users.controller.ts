@@ -4,6 +4,7 @@ import { AuthRequest } from "@/app";
 import { AppError } from "@/core";
 import { UpdateUser } from "./user.model";
 import { clearCookies } from "../auth";
+import { LibraryService } from "../library";
 
 export class UsersController {
     private service = new UsersService();
@@ -52,4 +53,13 @@ export class UsersController {
         }
     };
     // TODO: Add more user-related controller methods as needed like profile, etc
+    getUserLibrary = async (req: AuthRequest, res: Response) => {
+        const userId = req.user?.id;
+        if (!userId) throw new AppError("Unauthorized", 401);
+        const library = await LibraryService.getUserLibrary(userId);
+        res.json({
+            success: true,
+            data: library
+        })
+    }
 }
