@@ -13,6 +13,9 @@ export class PlaylistRepository {
 						track: true,
 					},
 				},
+                owner: {
+                    select: { id: true, username: true }
+                }
 			},
 		});
 	}

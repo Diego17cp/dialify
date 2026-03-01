@@ -55,6 +55,7 @@ export class PlaylistService {
             description: playlist.description,
             isPublic: playlist.isPublic,
             ownerId: playlist.ownerId,
+            ownerUsername: playlist.owner?.username || "Unknown",
             createdAt: playlist.createdAt,
             updatedAt: playlist.updatedAt,
             tracks: tracks.map((t) => ({
@@ -70,7 +71,8 @@ export class PlaylistService {
                 })),
                 genre: t.track.genre?.name || null,
                 orderIndex: t.orderIndex,
-                isLiked: userId ? t.track.likes && t.track.likes.length > 0 : false
+                isLiked: userId ? t.track.likes && t.track.likes.length > 0 : false,
+                addedAt: t.addedAt,
             })),
             pagination: {
                 page,
