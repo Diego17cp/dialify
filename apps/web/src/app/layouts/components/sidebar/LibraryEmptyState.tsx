@@ -5,60 +5,60 @@ import { MdLibraryMusic } from "react-icons/md";
 
 type Props = {
     type: "unauthenticated" | "empty" | "error";
+    onCreateClick?: () => void;
+    refetch?: () => void;
 };
 
-const content = {
-    unauthenticated: {
-        icon: <MdLibraryMusic className="text-3xl text-gray-500" />,
-        title: "Your library",
-        description: "Create an account to enjoy your saved songs, playlists and artists.",
-        action: (
-            <Link to="/register">
+export const LibraryEmptyState = ({ type, onCreateClick, refetch }: Props) => {
+    const content = {
+        unauthenticated: {
+            icon: <MdLibraryMusic className="text-3xl text-gray-500" />,
+            title: "Your library",
+            description: "Create an account to enjoy your saved songs, playlists and artists.",
+            action: (
+                <Link to="/register">
+                    <motion.button
+                        className="cursor-pointer bg-white hover:bg-gray-200 text-black font-bold text-xs px-4 py-2 rounded-full transition-colors"
+                        whileHover={{ scale: 1.03 }}
+                        whileTap={{ scale: 0.97 }}
+                    >
+                        Sign up free
+                    </motion.button>
+                </Link>
+            ),
+        },
+        empty: {
+            icon: <MdLibraryMusic className="text-3xl text-gray-500" />,
+            title: "Create your first playlist",
+            description: "It's easy, we'll help you!",
+            action: (
                 <motion.button
-                    className="cursor-pointer bg-white hover:bg-gray-200 text-black font-bold text-xs px-4 py-2 rounded-full transition-colors"
+                    className="cursor-pointer bg-white hover:bg-gray-200 text-black font-bold text-xs px-4 py-2 rounded-full transition-colors flex items-center gap-1.5"
                     whileHover={{ scale: 1.03 }}
                     whileTap={{ scale: 0.97 }}
+                    onClick={onCreateClick}
                 >
-                    Sign up free
+                    <FaPlus className="text-xs" />
+                    Create playlist
                 </motion.button>
-            </Link>
-        ),
-    },
-    empty: {
-        icon: <MdLibraryMusic className="text-3xl text-gray-500" />,
-        title: "Create your first playlist",
-        description: "It's easy, we'll help you!",
-        action: (
-            <motion.button
-                className="cursor-pointer bg-white hover:bg-gray-200 text-black font-bold text-xs px-4 py-2 rounded-full transition-colors flex items-center gap-1.5"
-                whileHover={{ scale: 1.03 }}
-                whileTap={{ scale: 0.97 }}
-                // TODO: Open create playlist modal
-            >
-                <FaPlus className="text-xs" />
-                Create playlist
-            </motion.button>
-        ),
-    },
-    error: {
-        icon: <MdLibraryMusic className="text-3xl text-red-500/60" />,
-        title: "Something went wrong",
-        description: "We couldn't load your library. Try again later.",
-        action: (
-            <motion.button
-                className="cursor-pointer text-gray-400 hover:text-white text-xs underline transition-colors"
-                whileHover={{ scale: 1.03 }}
-                whileTap={{ scale: 0.97 }}
-                // TODO: Implement actual retry logic like refetch from TQ
-                onClick={() => window.location.reload()}
-            >
-                Retry
-            </motion.button>
-        ),
-    },
-};
-
-export const LibraryEmptyState = ({ type }: Props) => {
+            ),
+        },
+        error: {
+            icon: <MdLibraryMusic className="text-3xl text-red-500/60" />,
+            title: "Something went wrong",
+            description: "We couldn't load your library. Try again later.",
+            action: (
+                <motion.button
+                    className="cursor-pointer text-gray-400 hover:text-white text-xs underline transition-colors"
+                    whileHover={{ scale: 1.03 }}
+                    whileTap={{ scale: 0.97 }}
+                    onClick={() => refetch?.()}
+                >
+                    Retry
+                </motion.button>
+            ),
+        },
+    };
     const { icon, title, description, action } = content[type];
 
     return (

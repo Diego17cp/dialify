@@ -3,6 +3,7 @@ import { RiUserFill } from "react-icons/ri";
 import { MdQueueMusic } from "react-icons/md";
 import type { LibrarySidebarItem } from "../../types/sidebar.types";
 import { PiHeartFill, PiMusicNoteFill } from "react-icons/pi";
+import { useNavigate } from "react-router";
 
 type Props = {
     item: LibrarySidebarItem;
@@ -12,7 +13,7 @@ type Props = {
 
 const TypeIcon = ({ type }: { type: LibrarySidebarItem["type"] }) => {
     switch (type) {
-        case "likes_playlist": return <PiHeartFill className="text-xs text-brand-primary" />;
+        case "likes_playlist": return <PiHeartFill className="text-xs text-brand-primary-light" />;
         case "artist":         return <RiUserFill className="text-xs text-gray-400" />;
         case "playlist":
         case "owned_playlist": return <MdQueueMusic className="text-xs text-gray-400" />;
@@ -28,8 +29,12 @@ const typeSubtitle: Record<LibrarySidebarItem["type"], string> = {
 export const LibraryItem = ({ item, isExpanded, index }: Props) => {
     const isArtist = item.type === "artist";
     const isLikes = item.type === "likes_playlist";
+    const navigate = useNavigate();
+    const handleClick = () => {
+        if (item.type === "artist") navigate(`/artist/${item.id}`);
+        else navigate(`/playlist/${item.id}`);
+    }
     return (
-        // TODO: Add navigation functionality to show the library item details when clicked
         <motion.button
             className="w-full flex items-center gap-3 px-2 py-2 rounded-lg hover:bg-gray-800/60 transition-colors duration-150 cursor-pointer group text-left"
             title={!isExpanded ? item.title : undefined}
@@ -37,9 +42,10 @@ export const LibraryItem = ({ item, isExpanded, index }: Props) => {
             animate={{ opacity: 1 }}
             transition={{ delay: index * 0.03, duration: 0.2 }}
             whileTap={{ scale: 0.98 }}
+            onClick={handleClick}
         >
             <div
-                className={`shrink-0 overflow-hidden ${isArtist ? "rounded-full" : "rounded-md"} ${isLikes ? "bg-linear-to-br from-brand-primary/80 via-brand-light to-accent/65" : "bg-gray-800"} ${isExpanded ? "size-10" : "size-9"}`}
+                className={`shrink-0 overflow-hidden ${isArtist ? "rounded-full" : "rounded-md"} ${isLikes ? "bg-linear-to-br from-brand-primary/80 via-brand-light to-purple-500/50" : "bg-gray-800"} ${isExpanded ? "size-10" : "size-9"}`}
             >
                 {item.coverUrl ? (
                     <img
