@@ -88,7 +88,7 @@ export class PlaylistService {
         const trackIds = await Promise.all(
             data.tracks.map(async (item) => {
                 if ("trackId" in item) return item.trackId;
-                const track = await IngestService.ingest({
+                const { track } = await IngestService.ingest({
                     source: "youtube",
                     sourceId: item.sourceId
                 });
