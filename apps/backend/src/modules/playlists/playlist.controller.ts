@@ -87,6 +87,10 @@ export class PlaylistController {
             ...(userId && { userId }),
         });
 
+        if (!playlist.isPublic && playlist.ownerId !== userId) {
+            throw new AppError("This playlist is private", 403);
+        }
+
         return res.json({
             success: true,
             data: playlist,
