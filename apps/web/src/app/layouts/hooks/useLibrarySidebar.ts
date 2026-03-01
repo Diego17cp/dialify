@@ -32,7 +32,7 @@ export const useLibrarySidebar = () => {
 
     const { isAuthenticated } = useAuthStore();
     const isAnonymous = localStorage.getItem("isAnonymous") && localStorage.getItem("isAnonymous") === "true";
-    const { data, isLoading, isError } = useQuery({
+    const { data, isLoading, isError, refetch } = useQuery({
         queryKey: ["library"],
         queryFn: libraryService.getLibraryItems,
         enabled: isAuthenticated && !isAnonymous,
@@ -163,6 +163,7 @@ export const useLibrarySidebar = () => {
         showCreateLabel,
         toggle,
         onDragStart,
-        items
+        items,
+        refetch
     };
 };
