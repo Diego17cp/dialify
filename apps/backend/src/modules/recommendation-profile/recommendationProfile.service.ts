@@ -189,8 +189,8 @@ export class RecommendationProfileService {
         userId: string,
         signal: {
             type: 'playback' | 'like' | 'search',
-            trackId?: number;
-            artistId?: number;
+            trackId?: string;
+            artistId?: string;
             genreName?: string;
             query?: string;
             completionRate?: number;
@@ -296,7 +296,7 @@ export class RecommendationProfileService {
         userId: string,
         options: {
             limit?: number;
-            excludeTrackIds?: number[];
+            excludeTrackIds?: string[];
             exploreRate?: number
         } = {}
     ) {
@@ -310,7 +310,7 @@ export class RecommendationProfileService {
             .filter(([_, stat]) => stat.skipRate < 0.5)
             .sort((a, b) => b[1].score - a[1].score)
             .slice(0, 5)
-            .map(([id]) => parseInt(id));
+            .map(([id]) => id);
         const topGenres = Object.entries(genreStats)
             .sort((a, b) => b[1].score - a[1].score)
             .slice(0, 5)

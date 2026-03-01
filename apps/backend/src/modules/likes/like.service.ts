@@ -19,7 +19,7 @@ export class LikesService {
                 if (newState) {
                     const track = await this.getTrackDetails(targetId);
                     if (track) {
-                        const updateData: { type: "like"; trackId: number; artistId?: number; genreName?: string } = {
+                        const updateData: { type: "like"; trackId: string; artistId?: string; genreName?: string } = {
                             type: "like",
                             trackId: targetId,
                         };
@@ -40,7 +40,7 @@ export class LikesService {
             await this.handleTrackLikePlaylist(userId, targetId, true);
             const track = await this.getTrackDetails(targetId);
             if (track) {
-                const updateData: { type: "like"; trackId: number; artistId?: number; genreName?: string } = {
+                const updateData: { type: "like"; trackId: string; artistId?: string; genreName?: string } = {
                     type: "like",
                     trackId: targetId,
                 };
@@ -55,11 +55,11 @@ export class LikesService {
         }
         return { liked: true, action: "liked" };
     }
-    private static async getTrackDetails(trackId: number) {
+    private static async getTrackDetails(trackId: string) {
         const repo = new LikesRepository();
         return repo.getTrackDetails(trackId);
     }
-    private static async handleTrackLikePlaylist(userId: string, trackId: number, shouldAdd: boolean) {
+    private static async handleTrackLikePlaylist(userId: string, trackId: string, shouldAdd: boolean) {
         let likesPlaylist = await this.repo.findLikesPlaylist(userId);
         if (!likesPlaylist) likesPlaylist = await this.repo.createLikesPlaylist(userId);
         if (shouldAdd) {
@@ -97,14 +97,14 @@ export class LikesService {
                 likedAt: like.createdAt
             })),
             tracks: {
-                playlistId: likesPlaylist?.id || 0,
+                playlistId: likesPlaylist?.id || "",
                 trackCount: likesPlaylist?._count.tracks || 0
             }
         }
     }
     static async isLiked(
         userId: string,
-        targetId: number,
+        targetId: string,
         targetType: LikeTargetType
     ) {
         return this.repo.isLiked(userId, targetId, targetType);
@@ -114,17 +114,17 @@ export class LikesService {
         return this.repo.getLikesCount(userId);
     }
 
-    static async toggleTrackLike(userId: string, trackId: number) {
+    static async toggleTrackLike(userId: string, trackId: string) {
         return this.toggleLike({ userId, targetId: trackId, targetType: "TRACK" });
     }
-    static async togglePlaylistLike(userId: string, playlistId: number) {
+    static async togglePlaylistLike(userId: string, playlistId: string) {
         return this.toggleLike({
             userId,
             targetId: playlistId,
             targetType: "PLAYLIST",
         });
     }
-    static async toggleArtistLike(userId: string, artistId: number) {
+    static async toggleArtistLike(userId: string, artistId: string) {
         return this.toggleLike({ userId, targetId: artistId, targetType: "ARTIST" });
     }
 }

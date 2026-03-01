@@ -1,11 +1,11 @@
 export interface PlaybackHistoryCreate {
-    trackId: number;
+    trackId: string;
     playDuration: number;
 }
 export interface PlaybackHistory {
     id: number;
     userId: string;
-    trackId: number;
+    trackId: string;
     playDuration: number;
     playedAt: Date;
     createdAt: Date;

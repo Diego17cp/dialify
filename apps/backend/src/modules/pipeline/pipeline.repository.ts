@@ -4,7 +4,7 @@ import { TrackStatus } from "generated/prisma/enums";
 export class PipelineRepository {
     private db = DatabaseConnection.getInstance().getClient();
 
-    async findById(trackId: number) {
+    async findById(trackId: string) {
         return this.db.track.findUnique({
             where: { id: trackId }
         })
@@ -14,14 +14,14 @@ export class PipelineRepository {
             where: { sourceId, source: "youtube" }
         })
     }
-    async updateStatus(trackId: number, status: TrackStatus) {
+    async updateStatus(trackId: string, status: TrackStatus) {
         return this.db.track.update({
             where: { id: trackId },
             data: { status }
         })
     }
     async markReady(
-        trackId: number,
+        trackId: string,
         data: {
             hlsPath: string;
             duration: number;
@@ -40,7 +40,7 @@ export class PipelineRepository {
             },
         });
     }
-    async markFailed(trackId: number) {
+    async markFailed(trackId: string) {
         return this.db.track.update({
             where: { id: trackId },
             data: { status: TrackStatus.FAILED }

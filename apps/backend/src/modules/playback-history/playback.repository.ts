@@ -6,7 +6,7 @@ export class PlaybackRepository {
 
 	async create(data: {
 		userId: string;
-		trackId: number;
+		trackId: string;
 		playDuration: number;
         trackDuration: number;
         completionRate: number;
@@ -47,7 +47,7 @@ export class PlaybackRepository {
     async countByUserId(userId: string): Promise<number> {
         return await this.db.playbackHistory.count({ where: { userId } });
     }
-    async getTrackWithDetails(trackId: number) {
+    async getTrackWithDetails(trackId: string) {
         return await this.db.track.findUnique({
             where: { id: trackId },
             include: {
@@ -98,7 +98,7 @@ export class PlaybackRepository {
         });
 
         const uniquePlays: typeof plays = [];
-        const seenTracks = new Set<number>();
+        const seenTracks = new Set<string>();
 
         for (const play of plays) {
             if (!seenTracks.has(play.trackId)) {

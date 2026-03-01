@@ -3,7 +3,7 @@ import { LikeTargetType } from "generated/prisma/enums";
 
 export class LikesRepository {
     private db = DatabaseConnection.getInstance().getClient();
-    async findLike(userId: string, targetId: number, targetType: LikeTargetType) {
+    async findLike(userId: string, targetId: string, targetType: LikeTargetType) {
         const whereClause: any = {
             userId,
             targetId,
@@ -21,7 +21,7 @@ export class LikesRepository {
             data: { isActive }
         })
     }
-    async create(userId: string, targetId: number, targetType: LikeTargetType = "TRACK") {
+    async create(userId: string, targetId: string, targetType: LikeTargetType = "TRACK") {
         return this.db.like.create({
             data: {
                 userId,
@@ -65,7 +65,7 @@ export class LikesRepository {
             return playlist;
         })
     }
-    async playlistHasTrack(playlistId: number, trackId: number) {
+    async playlistHasTrack(playlistId: string, trackId: string) {
         return this.db.playlistTrack.findFirst({
             where: {
                 playlistId,
@@ -126,7 +126,7 @@ export class LikesRepository {
             return { playlists, artists, likesPlaylist };
         });
     }
-    async isLiked(userId: string, targetId: number, targetType: LikeTargetType) {
+    async isLiked(userId: string, targetId: string, targetType: LikeTargetType) {
         const like = await this.findLike(userId, targetId, targetType);
         return like ? like.isActive : false;
     }
@@ -147,7 +147,7 @@ export class LikesRepository {
             return { tracks, playlists, artists };
         });
     }
-    async getTrackDetails(trackId: number) {
+    async getTrackDetails(trackId: string) {
         return this.db.track.findUnique({
             where: { id: trackId },
             include: {

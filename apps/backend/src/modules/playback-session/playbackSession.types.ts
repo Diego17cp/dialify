@@ -5,20 +5,20 @@ export type PlaybackSessionState =
     | "ERROR";
 
 export interface StartPlaybackSession {
-    trackId: number;
-    queue?: number[];
+    trackId: string;
+    queue?: string[];
 }
 
 export interface PlaybackSession {
     sessionId: string;
     userId: string;
-    trackId: number;
+    trackId: string;
     startTime: number;
     pausedAt?: number | undefined;
     totalPauseDuration: number;
     source: 'search' | 'playlist' | 'recommendation' | 'autoplay';
     searchQuery?: string;
-    playlistId?: number;
+    playlistId?: string;
     autoplayEnabled: boolean;
-    queue: number[];
+    queue: string[];
 }

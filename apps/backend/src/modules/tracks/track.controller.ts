@@ -6,8 +6,8 @@ import { TrackService } from "./track.service";
 export class TrackController {
     static async getTrack(req: AuthRequest, res: Response) {
         const { id } = req.params;
-        const trackId = parseInt(id as string);
-        if (isNaN(trackId)) throw new AppError("Invalid track ID", 400);
+        const trackId = id as string;
+        if (!trackId || typeof trackId !== "string") throw new AppError("Invalid track ID", 400);
 
         const track = await TrackService.getTrackById(trackId);
 
@@ -24,8 +24,8 @@ export class TrackController {
 
     static async checkStatus(req: AuthRequest, res: Response) {
         const { id } = req.params;
-        const trackId = parseInt(id as string);
-        if (isNaN(trackId)) throw new AppError("Invalid track ID", 400);
+        const trackId = id as string;
+        if (!trackId || typeof trackId !== "string") throw new AppError("Invalid track ID", 400);
 
         const status = await TrackService.checkTrackStatus(trackId);
 

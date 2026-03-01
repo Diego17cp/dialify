@@ -6,7 +6,7 @@ import { IngestService } from "../ingest/ingest.service";
 export class PlaylistService {
     private static repo = new PlaylistRepository();
 
-    private static async ensurePlaylistExists(playlistId: number) {
+    private static async ensurePlaylistExists(playlistId: string) {
         const playlist = await this.repo.findById(playlistId);
         if (!playlist) throw new AppError("Playlist not found", 404);
         return playlist;
@@ -17,11 +17,11 @@ export class PlaylistService {
         }
         return this.repo.create(data);
     }
-    static async updatePlaylist(playlistId: number, data: UpdatePlaylistDTO) {
+    static async updatePlaylist(playlistId: string, data: UpdatePlaylistDTO) {
         await this.ensurePlaylistExists(playlistId);
         return this.repo.update(playlistId, data);
     }
-    static async deletePlaylist(playlistId: number) {
+    static async deletePlaylist(playlistId: string) {
         await this.ensurePlaylistExists(playlistId);
         return this.repo.delete(playlistId);
     }
@@ -41,7 +41,7 @@ export class PlaylistService {
         }));
     }
     static async getPlaylistDetails(
-        playlistId: number,
+        playlistId: string,
         options: { page: number; limit: number; userId?: string }
     ) {
         const playlist = await this.ensurePlaylistExists(playlistId);
@@ -108,7 +108,7 @@ export class PlaylistService {
             skipped: trackIds.length - newTrackIds.length
         }
     }
-    static async removeTrack(playlistId: number, trackId: number) {
+    static async removeTrack(playlistId: string, trackId: string) {
         await this.ensurePlaylistExists(playlistId);
         const trackExists = await this.repo.trackExistsInPlaylist(playlistId, trackId);
         if (!trackExists) throw new AppError("Track not found in playlist", 404);

@@ -2,7 +2,7 @@ import { PipelineService } from './pipeline.service';
 
 interface Job {
     id: string;
-    trackId: number;
+    trackId: string;
     status: 'pending' | 'processing' | 'completed' | 'failed';
     createdAt: Date;
     error?: string;
@@ -13,7 +13,7 @@ class InMemoryQueue {
     private processing: boolean = false;
     private service = new PipelineService();
 
-    async add(data: { trackId: number }) {
+    async add(data: { trackId: string }) {
         const job: Job = {
             id: `${Date.now()}-${data.trackId}`,
             trackId: data.trackId,

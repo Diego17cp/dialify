@@ -25,10 +25,10 @@ export class PlaylistController {
     }
     static async updatePlaylist(req: AuthRequest, res: Response) {
         const { id } = req.params;
-        const playlistId = Number(id);
+        const playlistId = id as string;
         const { name, description, isPublic } = req.body;
 
-        if (isNaN(playlistId)) {
+        if (!playlistId || typeof playlistId !== "string") {
             throw new AppError("Invalid playlist ID", 400);
         }
 
@@ -45,9 +45,9 @@ export class PlaylistController {
     }
     static async deletePlaylist(req: AuthRequest, res: Response) {
         const { id } = req.params;
-        const playlistId = Number(id);
+        const playlistId = id as string;
 
-        if (isNaN(playlistId)) throw new AppError("Invalid playlist ID", 400);
+        if (!playlistId || typeof playlistId !== "string") throw new AppError("Invalid playlist ID", 400);
 
         await PlaylistService.deletePlaylist(playlistId);
 
@@ -74,12 +74,12 @@ export class PlaylistController {
 
     static async getPlaylistDetails(req: AuthRequest, res: Response) {
         const { id } = req.params;
-        const playlistId = Number(id);
+        const playlistId = id as string;
         const page = parseInt(req.query.page as string) || 1;
         const limit = parseInt(req.query.limit as string) || 50;
         const userId = req.user?.id;
 
-        if (isNaN(playlistId)) throw new AppError("Invalid playlist ID", 400);
+        if (!playlistId || typeof playlistId !== "string") throw new AppError("Invalid playlist ID", 400);
 
         const playlist = await PlaylistService.getPlaylistDetails(playlistId, {
             page,
@@ -95,10 +95,10 @@ export class PlaylistController {
 
     static async addTracks(req: AuthRequest, res: Response) {
         const { id } = req.params;
-        const playlistId = Number(id);
+        const playlistId = id as string;
         const { tracks } = req.body;
 
-        if (isNaN(playlistId)) throw new AppError("Invalid playlist ID", 400);
+        if (!playlistId || typeof playlistId !== "string") throw new AppError("Invalid playlist ID", 400);
         if (!Array.isArray(tracks) || tracks.length === 0) throw new AppError("Tracks array is required and must not be empty", 400);
 
         const result = await PlaylistService.addTracks({
@@ -114,10 +114,11 @@ export class PlaylistController {
 
     static async removeTrack(req: AuthRequest, res: Response) {
         const { playlistId: playlistIdParam, trackId: trackIdParam } = req.params;
-        const playlistId = Number(playlistIdParam);
-        const trackId = Number(trackIdParam);
+        const playlistId = playlistIdParam as string;
+        const trackId = trackIdParam as string;
 
-        if (isNaN(playlistId) || isNaN(trackId)) throw new AppError("Invalid playlist or track ID", 400);
+        if (!playlistId || typeof playlistId !== "string") throw new AppError("Invalid playlist ID", 400);
+        if (!trackId || typeof trackId !== "string") throw new AppError("Invalid track ID", 400);
 
         await PlaylistService.removeTrack(playlistId, trackId);
 

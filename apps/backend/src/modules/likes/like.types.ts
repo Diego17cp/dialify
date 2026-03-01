@@ -2,13 +2,13 @@ export type LikeTargetType = "TRACK" | "PLAYLIST" | "ARTIST";
 
 export interface LikeToggleInput {
     userId: string;
-    targetId: number;
+    targetId: string;
     targetType: LikeTargetType;
 }
 
 export interface LikedItem {
-    id: number;
-    targetId: number;
+    id: string;
+    targetId: string;
     targetType: LikeTargetType;
     likedAt: Date;
     isActive: boolean;
@@ -16,7 +16,7 @@ export interface LikedItem {
 
 export interface UserLikesResponse {
     playlists: {
-        id: number;
+        id: string;
         name: string;
         description: string | null;
         coverImageUrl: string | null;
@@ -26,14 +26,14 @@ export interface UserLikesResponse {
         likedAt: Date;
     }[];
     artists: {
-        id: number;
+        id: string;
         name: string;
         imageUrl: string | null;
         source: string;
         likedAt: Date;
     }[];
     tracks: {
-        playlistId: number;
+        playlistId: string;
         trackCount: number;
     };
 }

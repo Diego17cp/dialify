@@ -14,10 +14,10 @@ export class PlaybackSessionController {
 
         const session = await PlaybackSessionService.startSession({
             userId,
-            trackId: Number(trackId),
+            trackId: trackId as string,
             source: source || 'search',
             ...(searchQuery && { searchQuery }),
-            ...(playlistId && { playlistId: Number(playlistId) }),
+            ...(playlistId && { playlistId: playlistId as string }),
             autoplayEnabled: Boolean(autoplayEnabled),
             queue: queue || [],
         });

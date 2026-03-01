@@ -10,7 +10,7 @@ import { TrackStatus } from "generated/prisma/enums";
 
 export class PipelineService {
     private repo = new PipelineRepository();
-    async processTrack(trackId: number) {
+    async processTrack(trackId: string) {
         const track = await this.repo.findById(trackId);
         if (!track || !track.sourceId) throw new AppError(`Track ${trackId} not found or missing sourceId`, 404);
         const hlsPath = path.join(

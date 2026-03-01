@@ -4,7 +4,7 @@ import { TrackStatus } from "generated/prisma/enums";
 
 export class TrackService {
     private static repo = new TrackRepository();
-    static async getTrackById(id: number) {
+    static async getTrackById(id: string) {
         const track = await this.repo.findById(id);
         if (!track) throw new AppError("Track not found", 404);
         return {
@@ -24,7 +24,7 @@ export class TrackService {
             genre: track.genre?.name || null,
         };
     }
-    static async checkTrackStatus(id: number) {
+    static async checkTrackStatus(id: string) {
         const track = await this.repo.findById(id);
         if (!track) throw new AppError("Track not found", 404);
         return {

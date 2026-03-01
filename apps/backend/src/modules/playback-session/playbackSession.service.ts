@@ -34,12 +34,12 @@ export class PlaybackSessionService {
 
     static async startSession(data: {
         userId: string;
-        trackId: number;
+        trackId: string;
         source: PlaybackSession['source'];
         searchQuery?: string;
-        playlistId?: number;
+        playlistId?: string;
         autoplayEnabled?: boolean;
-        queue?: number[];
+        queue?: string[];
     }) {
         const trackRepo = new TrackRepository();
         const track = await trackRepo.findById(data.trackId);

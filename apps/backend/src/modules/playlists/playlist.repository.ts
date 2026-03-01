@@ -4,7 +4,7 @@ import { CreatePlaylistDTO, UpdatePlaylistDTO } from "./playlist.types";
 export class PlaylistRepository {
 	private db = DatabaseConnection.getInstance().getClient();
 
-	async findById(id: number) {
+	async findById(id: string) {
 		return this.db.playlist.findUnique({
 			where: { id },
 			include: {
@@ -16,12 +16,12 @@ export class PlaylistRepository {
 			},
 		});
 	}
-    async countTracks (playlistId: number) {
+    async countTracks (playlistId: string) {
         return this.db.playlistTrack.count({
             where: { playlistId }
         })
     }
-    async trackExistsInPlaylist(playlistId: number, trackId: number) {
+    async trackExistsInPlaylist(playlistId: string, trackId: string) {
         return this.db.playlistTrack.findFirst({
             where: {
                 playlistId,
@@ -29,7 +29,7 @@ export class PlaylistRepository {
             }
         });
     }
-    async getExistingTrackIds(playlistId: number, trackIds: number[]) {
+    async getExistingTrackIds(playlistId: string, trackIds: string[]) {
         return this.db.playlistTrack.findMany({
             where: {
                 playlistId,
@@ -41,8 +41,8 @@ export class PlaylistRepository {
         })
     }
     async addTrack(
-        playlistId: number,
-        trackId: number,
+        playlistId: string,
+        trackId: string,
         position: number
     ) {
         return this.db.playlistTrack.create({
@@ -53,7 +53,7 @@ export class PlaylistRepository {
             }
         })
     }
-    async addTracks(playlistId: number, trackIds: number[]) {
+    async addTracks(playlistId: string, trackIds: string[]) {
         const existingCount = await this.countTracks(playlistId);
         const createData = trackIds.map((trackId, index) => ({
             playlistId,
@@ -65,7 +65,7 @@ export class PlaylistRepository {
             skipDuplicates: true
         });
     }
-    async removeTrack(playlistId: number, trackId: number) {
+    async removeTrack(playlistId: string, trackId: string) {
         return this.db.playlistTrack.deleteMany({
             where: {
                 playlistId,
@@ -83,7 +83,7 @@ export class PlaylistRepository {
             }
         })
     }
-    async update(playlistId: number, data: UpdatePlaylistDTO) {
+    async update(playlistId: string, data: UpdatePlaylistDTO) {
         return this.db.playlist.update({
             where: { id: playlistId },
             data: {
@@ -93,7 +93,7 @@ export class PlaylistRepository {
             }
         })
     }
-    async delete(playlistId: number) {
+    async delete(playlistId: string) {
         return this.db.playlist.update({
             where: { id: playlistId },
             data: { isActive: false, deletedAt: new Date() }
@@ -130,7 +130,7 @@ export class PlaylistRepository {
         });
     }
     async getPlaylistTracks(
-        playlistId: number,
+        playlistId: string,
         options: { skip: number; limit: number; userId?: string }
     ) {
         return this.db.playlistTrack.findMany({

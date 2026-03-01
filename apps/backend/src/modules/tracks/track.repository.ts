@@ -2,7 +2,7 @@ import { DatabaseConnection } from "@/config";
 
 export class TrackRepository {
     private db = DatabaseConnection.getInstance().getClient()
-    async findById(id: number) {
+    async findById(id: string) {
         return this.db.track.findUnique({
             where: { id },
             include: {

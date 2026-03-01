@@ -93,9 +93,9 @@ export class RecommendationProfileRepository {
     }
     
     async findRecommendedTracks(options: {
-        artistIds: number[];
+        artistIds: string[];
         genres: string[];
-        excludeTrackIds: number[];
+        excludeTrackIds: string[];
         limit: number;
         exploreRate: number;
     }) {

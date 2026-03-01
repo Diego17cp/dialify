@@ -32,7 +32,7 @@ export class LikesController {
 
         const result = await LikesService.toggleTrackLike(
             userId,
-            Number(trackId)
+            trackId as string
         );
 
         res.json({ success: true, data: result });
@@ -45,7 +45,7 @@ export class LikesController {
 
         const result = await LikesService.togglePlaylistLike(
             userId,
-            Number(playlistId)
+            playlistId as string
         );
 
         res.json({ success: true, data: result });
@@ -58,7 +58,7 @@ export class LikesController {
 
         const result = await LikesService.toggleArtistLike(
             userId,
-            Number(artistId)
+            artistId as string
         );
 
         res.json({ success: true, data: result });
@@ -86,7 +86,7 @@ export class LikesController {
 
         const isLiked = await LikesService.isLiked(
             userId,
-            Number(targetId),
+            targetId as string,
             targetType as LikeTargetType
         );
 

@@ -9,7 +9,7 @@ export class PlaybackService {
     
     static async recordPlayback(data: {
         userId: string;
-        trackId: number;
+        trackId: string;
         playDuration: number;
         trackDuration: number;
         wasSkipped: boolean;

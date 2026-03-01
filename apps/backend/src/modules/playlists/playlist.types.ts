@@ -9,8 +9,8 @@ export interface UpdatePlaylistDTO {
     description?: string;
     isPublic?: boolean;
 }
-export type PlaylistTrackInput = { trackId: number } | { sourceId: string };
+export type PlaylistTrackInput = { trackId: string } | { sourceId: string };
 export interface AddTracksDTO {
-	playlistId: number;
+	playlistId: string;
 	tracks: PlaylistTrackInput[];
 }
