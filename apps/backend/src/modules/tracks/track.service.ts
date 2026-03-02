@@ -49,4 +49,24 @@ export class TrackService {
                 return 0;
         }
     }
+    static async searchTracks(query: string, page: number = 1, limit: number = 20) {
+        const offset = (page - 1) * limit;
+        const tracks = await this.repo.findByQuery(query, limit, offset);
+        return tracks.map((track) => ({
+            id: track.id,
+            title: track.title,
+            duration: track.duration,
+            thumbnailUrl: track.thumbnailUrl,
+            source: track.source,
+            sourceId: track.sourceId,
+            status: track.status,
+            hlsPath: track.hlsPath,
+            bitrates: track.bitrates,
+            artists: track.artists.map((a) => ({
+                id: a.artist.id,
+                name: a.artist.name,
+            })),
+            genre: track.genre?.name || null,
+        }));
+    }
 }

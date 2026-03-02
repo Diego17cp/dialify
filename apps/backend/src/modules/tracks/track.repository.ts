@@ -15,4 +15,24 @@ export class TrackRepository {
             }
         })
     }
+    async findByQuery(query: string, limit: number = 20, offset: number = 0) {
+        return this.db.track.findMany({
+            where: {
+                title: {
+                    contains: query,
+                    mode: "insensitive",
+                }
+            },
+            include: {
+                artists: {
+                    include: {
+                        artist: true,
+                    }
+                },
+                genre: true,
+            },
+            take: limit,
+            skip: offset,
+        })
+    }
 }
